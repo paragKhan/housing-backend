@@ -15,4 +15,8 @@ class User extends Authenticatable
     protected $guarded = [];
     protected $hidden = ['password'];
     protected static $guardName = 'user';
+
+    public function applications(){
+        return $this->hasMany(Application::class);
+    }
 }

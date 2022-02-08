@@ -43,6 +43,7 @@ class CreateApplicationsTable extends Migration
             $table->string('position');
             $table->string('work_phone');
             $table->string('payment_slip');
+            $table->string('status')->default("submitted");
             $table->timestamps();
         });
     }

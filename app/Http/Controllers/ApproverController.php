@@ -36,6 +36,8 @@ class ApproverController extends Controller
 
     public function destroy(Approver $approver)
     {
-        //
+        $approver->delete();
+
+        return response()->json(['message' => 'Approver deleted']);
     }
 }

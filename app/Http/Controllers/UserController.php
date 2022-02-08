@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreApplicationRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
@@ -31,7 +32,9 @@ class UserController extends Controller
 
         $user->update($request->validated());
 
-        deleteImage($previous_photo);
+        if ($request->has('photo')) {
+            PhotoController::delete($previous_photo);
+        }
 
         return response()->json($user);
     }
@@ -40,4 +43,5 @@ class UserController extends Controller
     {
         //
     }
+
 }

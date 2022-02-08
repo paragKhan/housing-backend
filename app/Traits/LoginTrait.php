@@ -2,12 +2,17 @@
 
 namespace App\Traits;
 
+use App\Models\Admin;
+use App\Models\Approver;
+use App\Models\Manager;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\HasApiTokens;
 
 trait LoginTrait
 {
     use HasApiTokens;
+
 
     public static function login(Request $request){
         $validated = $request->validate([
@@ -17,6 +22,7 @@ trait LoginTrait
 
         if(auth(self::$guardName)->attempt($validated)){
             $user = self::where('email', $request->email)->first();
+
 
             if(!$user->is_active){
                 return response()->json(['message' => 'User is inactive. Please contact support'], 401);

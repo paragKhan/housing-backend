@@ -32,6 +32,8 @@ class ManagerController extends Controller
 
     public function destroy(Manager $manager)
     {
-        //
+        $manager->delete();
+
+        return response()->json(['message' => 'Manager deleted']);
     }
 }

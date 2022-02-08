@@ -30,7 +30,7 @@ class UserAuthController extends Controller
         $validated = $request->validate([
             'user_id' => 'required|integer'
         ]);
-        if (auth()->id() == $validated["user_id"]) {
+        if (get_class(auth()->user()) == User::class && auth()->id() == $validated["user_id"]) {
             return true;
         }
 

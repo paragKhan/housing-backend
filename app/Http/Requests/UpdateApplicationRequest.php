@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateApplicationRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class UpdateApplicationRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +25,7 @@ class UpdateApplicationRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'status' => ['string', Rule::in(['submitted', 'reviewing', 'approved', 'declined', 'resubmit'])]
         ];
     }
 }
