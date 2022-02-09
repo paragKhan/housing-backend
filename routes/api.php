@@ -3,7 +3,9 @@
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ApproverController;
+use App\Http\Controllers\HousingModelController;
 use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\SubdivisionController;
 use App\Http\Controllers\UserAuthController;
@@ -35,8 +37,10 @@ Route::post('testing', function (Request $request) {
 Route::prefix('user')->group(function () {
     Route::post('login', [UserAuthController::class, 'login']);
     Route::post('signup', [UserAuthController::class, 'signup']);
+    Route::post('messages', [MessageController::class, 'store']);
 
     Route::apiResource('subdivisions', SubdivisionController::class)->only('index', 'show');
+    Route::apiResource('housing_models', HousingModelController::class)->only('index', 'show');
 
     Route::middleware('auth:api_user')->group(function () {
         //Upload photo
@@ -76,6 +80,8 @@ Route::prefix('admin')->group(function () {
         Route::apiResource('users', UserController::class)->except('destroy');
         Route::apiResource('applications', ApplicationController::class);
         Route::apiResource('subdivisions', SubdivisionController::class);
+        Route::apiResource('housing_models', HousingModelController::class);
+        Route::apiResource('messages', MessageController::class)->except('create', 'update');
     });
 
 });
