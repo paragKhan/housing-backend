@@ -31,7 +31,6 @@ class ApplicationController extends Controller
      */
     public function store(StoreApplicationRequest $request)
     {
-
         $validated = $request->validated();
 
         $application = auth()->user()->applications()->create($validated);
@@ -89,7 +88,7 @@ class ApplicationController extends Controller
         $application = auth()->user()->applications()->latest('created_at')->first();
 
         if($application){
-            return response()->json(['status' => $application->status]);
+            return response()->json(['status' => $application->status, 'comments' => $application->comments]);
         }
         else{
             return response()->json(['status' => "undefined"]);

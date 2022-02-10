@@ -25,7 +25,8 @@ class UpdateApplicationRequest extends FormRequest
     public function rules()
     {
         return [
-            'status' => ['string', Rule::in(['submitted', 'reviewing', 'approved', 'declined', 'resubmit'])]
+            'status' => ['string', Rule::in(['submitted', 'reviewing', 'approved', 'declined', 'resubmit'])],
+            'comments' => 'nullable|string'
         ];
     }
 }

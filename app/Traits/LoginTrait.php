@@ -33,7 +33,7 @@ trait LoginTrait
             return response()->json(['token' => $token, 'user' => $user]);
         }
 
-        return response()->json(['message' => 'Authentication failed'], 401);
+        return response()->json(['message' => 'Authentication failed'], 403);
     }
 
     public static function logout(){
