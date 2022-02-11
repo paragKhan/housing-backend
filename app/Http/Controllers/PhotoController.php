@@ -13,7 +13,7 @@ class PhotoController extends Controller
     public function upload(Request $request)
     {
         $request->validate([
-            'photo' => 'required|mimes:jpeg,png,jpg|max:30000'
+            'photo' => 'required|mimes:jpeg,png,jpg'
         ]);
 
         $photo_name = Str::random(10) . '.' . time() . '.' . $request->file('photo')->getClientOriginalExtension();
