@@ -46,7 +46,6 @@ Route::prefix('user')->group(function () {
         //Upload photo
         Route::post('upload_photo', [PhotoController::class, 'upload']);
         Route::get('logout', [UserAuthController::class, 'logout']);
-        Route::post('verify-token', [UserAuthController::class, 'verifyToken']);
         Route::get('profile', [UserAuthController::class, 'getProfile']);
         Route::put('profile', [UserAuthController::class, 'updateProfile']);
 
@@ -62,11 +61,21 @@ Route::prefix('approver')->group(function () {
     Route::post('login', function (Request $request) {
         return Approver::login($request);
     });
+
+    Route::middleware('auth:api_approver')->group(function (){
+        Route::apiResource('applications', ApplicationController::class);
+        Route::apiResource('messages', MessageController::class)->except('create', 'update');
+    });
 });
 
 Route::prefix('manager')->group(function () {
     Route::post('login', function (Request $request) {
         return Manager::login($request);
+    });
+
+    Route::middleware('auth:api_manager')->group(function (){
+        Route::apiResource('subdivisions', SubdivisionController::class);
+        Route::apiResource('housing_models', HousingModelController::class);
     });
 });
 

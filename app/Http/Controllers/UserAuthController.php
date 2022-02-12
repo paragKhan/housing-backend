@@ -25,18 +25,6 @@ class UserAuthController extends Controller
         return User::logout();
     }
 
-    public function verifyToken(Request $request)
-    {
-        $validated = $request->validate([
-            'user_id' => 'required|integer'
-        ]);
-        if (get_class(auth()->user()) == User::class && auth()->id() == $validated["user_id"]) {
-            return true;
-        }
-
-        abort(401);
-    }
-
     public function getProfile()
     {
         return response()->json(auth()->user());
