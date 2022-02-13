@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\HousingModel;
 use App\Http\Requests\StoreHousingModelRequest;
 use App\Http\Requests\UpdateHousingModelRequest;
+use Illuminate\Http\Request;
 
 class HousingModelController extends Controller
 {
@@ -13,9 +14,29 @@ class HousingModelController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(HousingModel::paginate(20));
+        $request->validate([
+            'location' => 'nullable|string',
+            'bedrooms' => 'nullable|string',
+            'bathrooms' => 'nullable|string'
+        ]);
+
+        $housingModels = new HousingModel();
+
+        if($request->has('location') && $request->location){
+            $housingModels = $housingModels->where('location', $request->location);
+        }
+
+        if($request->has('bedrooms') && $request->bedrooms){
+            $housingModels = $housingModels->where('bedrooms', $request->bedrooms);
+        }
+
+        if($request->has('bathrooms') && $request->bathrooms){
+            $housingModels = $housingModels->where('bathrooms', $request->bathrooms);
+        }
+
+        return response()->json($housingModels->paginate(20));
     }
 
     /**
@@ -67,5 +88,15 @@ class HousingModelController extends Controller
         $housingModel->delete();
 
         return response()->json(['message' => 'Housing model deleted.']);
+    }
+
+    public function getQueries(){
+        $locations = HousingModel::select('location')->distinct()->get()->pluck('location');
+        $bedrooms = HousingModel::select('bedrooms')->distinct()->get()->pluck('bedrooms');
+        $bathrooms = HousingModel::select('bathrooms')->distinct()->get()->pluck('bathrooms');
+
+        $queries = ['locations' => $locations, 'bathrooms'=>$bathrooms, 'bedrooms' => $bedrooms];
+
+        return response()->json($queries);
     }
 }

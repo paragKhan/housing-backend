@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Subdivision;
 use App\Http\Requests\StoreSubdivisionRequest;
 use App\Http\Requests\UpdateSubdivisionRequest;
+use Illuminate\Http\Request;
 
 class SubdivisionController extends Controller
 {
@@ -13,11 +14,17 @@ class SubdivisionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $subdivisions = Subdivision::paginate(20);
+        $request->validate(['location' => 'nullable|string']);
 
-        return response()->json($subdivisions);
+        $subdivisions = new Subdivision();
+
+        if($request->has('location') && $request->location){
+            $subdivisions = Subdivision::where('location', $request->location);
+        }
+
+        return response()->json($subdivisions->paginate(20));
     }
 
     /**
@@ -71,5 +78,11 @@ class SubdivisionController extends Controller
         $subdivision->delete();
 
         return response()->json(['message' => 'Subdivision deleted.']);
+    }
+
+    public function getLocations(){
+        $locations = Subdivision::select('location')->distinct()->get()->pluck('location');
+
+        return response()->json($locations);
     }
 }

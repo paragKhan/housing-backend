@@ -39,7 +39,9 @@ Route::prefix('user')->group(function () {
     Route::post('signup', [UserAuthController::class, 'signup']);
     Route::post('messages', [MessageController::class, 'store']);
 
+    Route::get('subdivisions/get-locations', [SubdivisionController::class, "getLocations"]);
     Route::apiResource('subdivisions', SubdivisionController::class)->only('index', 'show');
+    Route::get('housing_models/get-queries', [HousingModelController::class, "getQueries"]);
     Route::apiResource('housing_models', HousingModelController::class)->only('index', 'show');
 
     Route::middleware('auth:api_user')->group(function () {
