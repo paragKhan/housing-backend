@@ -73,6 +73,9 @@ Route::prefix('approver')->group(function () {
     });
 
     Route::middleware('auth:api_approver')->group(function (){
+        Route::get('logout', function(){
+            return Approver::logout();
+        });
         Route::apiResource('applications', ApplicationController::class);
         Route::apiResource('messages', MessageController::class)->except('create', 'update');
     });
@@ -84,6 +87,9 @@ Route::prefix('manager')->group(function () {
     });
 
     Route::middleware('auth:api_manager')->group(function (){
+        Route::get('logout', function(){
+            return Manager::logout();
+        });
         Route::apiResource('subdivisions', SubdivisionController::class);
         Route::apiResource('housing_models', HousingModelController::class);
     });
