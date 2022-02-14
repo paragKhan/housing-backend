@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserSignupRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Mail\Users\AccountVerified;
+use App\Mail\Users\Welcome;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Verified;
@@ -17,7 +19,9 @@ class UserAuthController extends Controller
 {
     public function signup(StoreUserSignupRequest $request)
     {
-        User::create($request->validated());
+        $user = User::create($request->validated());
+
+        Mail::to($user)->send(new Welcome());
 
         return response()->json(['message' => 'Signup successful']);
     }
@@ -67,6 +71,7 @@ class UserAuthController extends Controller
 
         if($request->user()->markEmailAsVerified()){
             event(new Verified($request->user()));
+            Mail::to($request->user())->send(new AccountVerified());
         }
 
         return response()->json('Email has been verified');

@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\Users\ApplicationSubmitted;
+use App\Mail\Users\ApplicationUpdated;
 use App\Models\Application;
 use App\Http\Requests\StoreApplicationRequest;
 use App\Http\Requests\UpdateApplicationRequest;
 use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Mail;
 
 class ApplicationController extends Controller
 {
@@ -35,6 +38,8 @@ class ApplicationController extends Controller
 
         $application = auth()->user()->applications()->create($validated);
 
+        Mail::to(auth()->user())->send(new ApplicationSubmitted());
+
         return response()->json($application);
     }
 
@@ -59,6 +64,8 @@ class ApplicationController extends Controller
     public function update(UpdateApplicationRequest $request, Application $application)
     {
         $application->update($request->validated());
+
+        Mail::to($application->user)->send(new ApplicationUpdated($application->refresh()));
 
         return response()->json($application);
     }

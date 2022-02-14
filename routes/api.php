@@ -29,9 +29,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('testing', function (Request $request) {
-    return auth()->user();
-})->middleware('auth:sanctum');
+Route::get('email', function (Request $request) {
+    return new \App\Mail\Users\ApplicationUpdated(\App\Models\Application::first());
+});
 
 //User
 Route::prefix('user')->group(function () {
