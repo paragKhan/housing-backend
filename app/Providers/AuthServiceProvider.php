@@ -30,7 +30,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         VerifyEmail::toMailUsing(function($notifiable, $url){
-            $spaUrl = "mothbahamas.com/verify-email?url=$url";
+            $spaUrl = "https://mothbahamas.com/verify-email?url=$url";
 
             return (new MailMessage)
                 ->subject('Verify Email Address')
@@ -39,7 +39,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         ResetPassword::toMailUsing(function($user, $token){
-            $spaUrl = "mothbahamas.com/reset-password?email=".$user->email."&token=".$token;
+            $spaUrl = "https://mothbahamas.com/reset-password?email=".$user->email."&token=".$token;
 
             return (new MailMessage)
                 ->subject("Reset Password")
