@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserSignupRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 
 class UserAuthController extends Controller
 {
@@ -67,5 +70,41 @@ class UserAuthController extends Controller
         }
 
         return response()->json('Email has been verified');
+    }
+
+    public function forgotPassword(Request $request){
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $status = Password::sendResetLink($request->only('email'));
+
+        if($status == Password::RESET_LINK_SENT){
+            return ['message' => __($status)];
+        }
+
+        return response(['message'=> __($status)], 500);
+    }
+
+    public function resetPassword(Request $request){
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6'
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'token'),
+            function($user) use($request) {
+                $user->update(['password' => Hash::make($request->password)]);
+                event(new PasswordReset($user));
+            }
+        );
+
+        if($status == Password::PASSWORD_RESET){
+            return ['message' => __($status)];
+        }
+
+        return response(['message'=> __($status)], 500);
     }
 }

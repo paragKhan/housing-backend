@@ -39,8 +39,13 @@ Route::prefix('user')->group(function () {
     Route::post('signup', [UserAuthController::class, 'signup']);
     Route::post('messages', [MessageController::class, 'store']);
 
+    //Email Verification
     Route::post('send-verification-email', [UserAuthController::class, 'sendVerificationEmail'])->middleware('auth:api_user');
     Route::get('verify-email/{id}/{hash}', [UserAuthController::class, 'verifyEmail'])->name('verification.verify')->middleware('auth:api_user');
+
+    //Forgot and Reset password
+    Route::post('forgot-password', [UserAuthController::class, "forgotPassword"]);
+    Route::post('reset-password', [UserAuthController::class, "resetPassword"])->name('password.reset');
 
     Route::get('subdivisions/get-locations', [SubdivisionController::class, "getLocations"]);
     Route::apiResource('subdivisions', SubdivisionController::class)->only('index', 'show');
