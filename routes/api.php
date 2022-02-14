@@ -39,6 +39,9 @@ Route::prefix('user')->group(function () {
     Route::post('signup', [UserAuthController::class, 'signup']);
     Route::post('messages', [MessageController::class, 'store']);
 
+    Route::post('send-verification-email', [UserAuthController::class, 'sendVerificationEmail'])->middleware('auth:api_user');
+    Route::get('verify-email/{id}/{hash}', [UserAuthController::class, 'verifyEmail'])->name('verification.verify')->middleware('auth:api_user');
+
     Route::get('subdivisions/get-locations', [SubdivisionController::class, "getLocations"]);
     Route::apiResource('subdivisions', SubdivisionController::class)->only('index', 'show');
     Route::get('housing_models/get-queries', [HousingModelController::class, "getQueries"]);
