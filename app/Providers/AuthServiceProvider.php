@@ -33,18 +33,14 @@ class AuthServiceProvider extends ServiceProvider
             $spaUrl = "https://mothbahamas.com/verify-email?url=$url";
 
             return (new MailMessage)
-                ->subject('Verify Email Address')
-                ->line('Click the button bellow to verify your email address')
-                ->action('Verify Email Address', $spaUrl);
+                ->markdown("emails.users.email-verification", ['spaUrl' => $spaUrl]);
         });
 
         ResetPassword::toMailUsing(function($user, $token){
             $spaUrl = "https://mothbahamas.com/reset-password?email=".$user->email."&token=".$token;
 
             return (new MailMessage)
-                ->subject("Reset Password")
-                ->line("Click the button bellow to reset your password")
-                ->action('Reset Password', $spaUrl);
+                ->markdown("emails.users.password-reset", ['spaUrl' => $spaUrl]);
         });
     }
 }

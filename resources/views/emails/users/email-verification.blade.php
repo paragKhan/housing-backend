@@ -6,14 +6,14 @@
 <br>
 
 <h1 style="font-weight: bold; text-align: center">
-    We have received your application and we will inform once we begin to process your application.
+    Welcome to the Ministry of Transport and Housing.
 </h1>
 
 <p style="text-align: center">
-    Click on the button bellow to view your application status.
+    Click on the button bellow to verify your email.
 </p>
-@component('mail::button', ['url' => 'https://mothbahamas.com/application-status'])
-    View Application Status
+@component('mail::button', ['url' => $spaUrl])
+    Verify Email
 @endcomponent
 Thanks,<br>
 {{ config('app.name') }} <br>
@@ -21,4 +21,3 @@ Charlotte House, Charlotte Street,<br>
 P.O.Box N275 Nassau, N.P.,The Bahamas<br>
 <a href="https://www.mothbahamas.com">Visit Website</a>
 @endcomponent
-
