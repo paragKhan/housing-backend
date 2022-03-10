@@ -83,9 +83,9 @@ class ApplicationController extends Controller
     }
 
     public function canSubmitApplication(){
-        $application = auth()->user()->applications()->where('status', 'submitted')->orWhere('status', 'reviewing')->first();
+        $application = auth()->user()->applications()->latest()->first();
 
-        if($application){
+        if($application && ($application->status == 'submitted' || $application->status == 'reviewing')){
             return response()->json(['canSubmit' => false]);
         }
         return response()->json(['canSubmit' => true]);
