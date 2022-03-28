@@ -16,12 +16,19 @@ class SubdivisionController extends Controller
      */
     public function index(Request $request)
     {
-        $request->validate(['location' => 'nullable|string']);
+        $request->validate([
+            'location' => 'nullable|string',
+            'category' => 'nullable|string'
+        ]);
 
         $subdivisions = new Subdivision();
 
         if($request->has('location') && $request->location){
-            $subdivisions = Subdivision::where('location', $request->location);
+            $subdivisions = $subdivisions->where('location', $request->location);
+        }
+
+        if($request->has('category')  && $request->category){
+            $subdivisions = $subdivisions->where('category', $request->category);
         }
 
         return response()->json($subdivisions->paginate(20));

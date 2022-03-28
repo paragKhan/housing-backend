@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Photo;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreSubdivisionRequest extends FormRequest
 {
@@ -28,7 +29,8 @@ class StoreSubdivisionRequest extends FormRequest
             'heading' => 'required|string',
             'location' => 'required|string',
             'description' => 'required|string',
-            'photo' => 'required|string|exists:photos,uniqid'
+            'photo' => 'required|string|exists:photos,uniqid',
+            'category' => ['nullable', Rule::in(['featured', 'new_arrival'])]
         ];
     }
 
