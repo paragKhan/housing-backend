@@ -10,4 +10,8 @@ class HousingModel extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function applications(){
+        return $this->hasMany(Application::class);
+    }
 }

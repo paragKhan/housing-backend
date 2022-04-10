@@ -26,6 +26,7 @@ class CreateHousingModelsTable extends Migration
             $table->string('patios')->nullable();
             $table->string('master_plan_photo');
             $table->string('basic_plan_photo');
+            $table->boolean('include_in_application')->default(false);
             $table->timestamps();
         });
     }

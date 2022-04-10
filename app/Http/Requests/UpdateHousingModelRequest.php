@@ -35,7 +35,8 @@ class UpdateHousingModelRequest extends FormRequest
             'garages' => 'nullable|string',
             'patios' => 'nullable|string',
             'master_plan_photo' => 'string',
-            'basic_plan_photo' => 'string'
+            'basic_plan_photo' => 'string',
+            'include_in_application' => 'boolean'
         ];
     }
 

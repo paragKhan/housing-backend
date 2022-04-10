@@ -17,6 +17,8 @@ class CreateApplicationsTable extends Migration
         Schema::create('applications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
+            $table->foreignId('subdivision_id')->nullable()->constrained();
+            $table->foreignId('housing_model_id')->nullable()->constrained();
             $table->string('fname');
             $table->string('lname');
             $table->string('nib_no');

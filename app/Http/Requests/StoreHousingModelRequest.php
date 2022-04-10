@@ -35,7 +35,8 @@ class StoreHousingModelRequest extends FormRequest
             'garages' => 'nullable|string',
             'patios' => 'nullable|string',
             'master_plan_photo' => 'required|string',
-            'basic_plan_photo' => 'required|string'
+            'basic_plan_photo' => 'required|string',
+            'include_in_application' => 'boolean'
         ];
     }
 

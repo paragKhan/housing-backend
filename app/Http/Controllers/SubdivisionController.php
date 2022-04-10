@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HousingModel;
 use App\Models\Subdivision;
 use App\Http\Requests\StoreSubdivisionRequest;
 use App\Http\Requests\UpdateSubdivisionRequest;
@@ -12,13 +13,14 @@ class SubdivisionController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
         $request->validate([
             'location' => 'nullable|string',
-            'category' => 'nullable|string'
+            'category' => 'nullable|string',
+            'include_in_application' => 'nullable|boolean'
         ]);
 
         $subdivisions = new Subdivision();
@@ -91,5 +93,11 @@ class SubdivisionController extends Controller
         $locations = Subdivision::select('location')->distinct()->get()->pluck('location');
 
         return response()->json($locations);
+    }
+
+    public function forApplication(){
+        $subdivisions = Subdivision::where('include_in_application', true)->get();
+
+        return response()->json($subdivisions);
     }
 }

@@ -48,7 +48,10 @@ Route::prefix('user')->group(function () {
     Route::post('reset-password', [UserAuthController::class, "resetPassword"])->name('password.reset');
 
     Route::get('subdivisions/get-locations', [SubdivisionController::class, "getLocations"]);
+    Route::get('subdivisions/for-application', [SubdivisionController::class, 'forApplication']);
     Route::apiResource('subdivisions', SubdivisionController::class)->only('index', 'show');
+
+    Route::get('housing_models/for-application', [HousingModelController::class, 'forApplication']);
     Route::get('housing_models/get-queries', [HousingModelController::class, "getQueries"]);
     Route::apiResource('housing_models', HousingModelController::class)->only('index', 'show');
 

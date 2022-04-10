@@ -51,6 +51,7 @@ class ApplicationController extends Controller
      */
     public function show(Application $application)
     {
+        $application->load(['subdivision', 'housingModel']);
         return response()->json($application);
     }
 

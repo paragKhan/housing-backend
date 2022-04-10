@@ -30,7 +30,8 @@ class UpdateSubdivisionRequest extends FormRequest
             'location' => 'string',
             'description' => 'string',
             'photo' => 'string|exists:photos,uniqid',
-            'category' => ['nullable', Rule::in(['featured', 'new_arrival'])]
+            'category' => ['nullable', Rule::in(['featured', 'new_arrival'])],
+            'include_in_application' => 'boolean'
         ];
     }
 

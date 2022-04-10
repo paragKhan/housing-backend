@@ -12,14 +12,14 @@ class HousingModelController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
         $request->validate([
             'location' => 'nullable|string',
             'bedrooms' => 'nullable|string',
-            'bathrooms' => 'nullable|string'
+            'bathrooms' => 'nullable|string',
         ]);
 
         $housingModels = new HousingModel();
@@ -98,5 +98,11 @@ class HousingModelController extends Controller
         $queries = ['locations' => $locations, 'bathrooms'=>$bathrooms, 'bedrooms' => $bedrooms];
 
         return response()->json($queries);
+    }
+
+    public function forApplication(){
+        $housingModels = HousingModel::where('include_in_application', true)->get();
+
+        return response()->json($housingModels);
     }
 }

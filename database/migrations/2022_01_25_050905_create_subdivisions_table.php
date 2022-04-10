@@ -19,6 +19,8 @@ class CreateSubdivisionsTable extends Migration
             $table->string('location');
             $table->text('description');
             $table->string('photo');
+            $table->string('category')->nullable();
+            $table->boolean('include_in_application')->default(false);
             $table->timestamps();
         });
     }

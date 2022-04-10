@@ -30,7 +30,8 @@ class StoreSubdivisionRequest extends FormRequest
             'location' => 'required|string',
             'description' => 'required|string',
             'photo' => 'required|string|exists:photos,uniqid',
-            'category' => ['nullable', Rule::in(['featured', 'new_arrival'])]
+            'category' => ['nullable', Rule::in(['featured', 'new_arrival'])],
+            'include_in_application' => 'boolean'
         ];
     }
 

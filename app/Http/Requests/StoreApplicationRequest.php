@@ -52,6 +52,8 @@ class StoreApplicationRequest extends FormRequest
             'position' => 'string',
             'work_phone' => 'string',
             'payment_slip' => 'string|exists:photos,uniqid',
+            'housing_model_id' => 'exists:housing_models,id',
+            'subdivision_id' => 'exists:subdivisions,id',
         ];
     }
 
