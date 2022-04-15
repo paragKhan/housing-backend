@@ -55,6 +55,17 @@ return [
             'driver' => 'session',
             'provider' => 'approvers'
         ],
+
+        'executive' => [
+            'driver' => 'session',
+            'provider' => 'executives'
+        ],
+
+        'staff' => [
+            'driver' => 'session',
+            'provider' => 'staff'
+        ],
+
         'manager' => [
             'driver' => 'session',
             'provider' => 'managers'
@@ -77,6 +88,14 @@ return [
             'driver' => 'sanctum',
             'provider' => 'managers'
         ],
+        'api_executive' => [
+            'driver' => 'sanctum',
+            'provider' => 'executives'
+        ],
+        'api_staff' => [
+            'driver' => 'sanctum',
+            'provider' => 'staffs'
+        ]
     ],
 
     /*
@@ -116,6 +135,14 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Manager::class,
         ],
+        'executives' => [
+            'driver' => 'eloquent',
+            'model' => \App\Models\Executive::class
+        ],
+        'staffs' => [
+            'driver' => 'eloquent',
+            'model' => \App\Models\Staff::class
+        ]
     ],
 
     /*

@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             ApproverSeeder::class,
             ManagerSeeder::class,
+            ExecutiveSeeder::class,
+            StaffSeeder::class,
             UserSeeder::class,
             TokenSeeder::class
         ]);

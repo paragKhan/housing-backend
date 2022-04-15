@@ -19,6 +19,7 @@ class CreateApplicationsTable extends Migration
             $table->foreignId('user_id')->constrained();
             $table->foreignId('subdivision_id')->nullable()->constrained();
             $table->foreignId('housing_model_id')->nullable()->constrained();
+            $table->foreignId('executive_id')->nullable()->constrained();
             $table->string('fname');
             $table->string('lname');
             $table->string('nib_no');
@@ -38,13 +39,10 @@ class CreateApplicationsTable extends Migration
             $table->string('passport_no')->nullable();
             $table->date('passport_expiry')->nullable();
             $table->string('driving_licence_no')->nullable();
-            $table->string("nib_photo");
-            $table->string("passport_photo")->nullable();
             $table->string('employer');
             $table->string('industry');
             $table->string('position');
             $table->string('work_phone');
-            $table->string('payment_slip');
             $table->string('status')->default("submitted");
             $table->text('comments')->nullable();
             $table->timestamps();

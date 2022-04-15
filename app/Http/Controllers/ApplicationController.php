@@ -29,7 +29,7 @@ class ApplicationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreApplicationRequest  $request
+     * @param \App\Http\Requests\StoreApplicationRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreApplicationRequest $request)
@@ -38,7 +38,14 @@ class ApplicationController extends Controller
 
         $application = auth()->user()->applications()->create($validated);
 
-        Mail::to(auth()->user())->send(new ApplicationSubmitted());
+        $application->addMediaFromRequest('nib_photo')->toMediaCollection('nib_photo');
+        $application->addMediaFromRequest('pre_approved_letter_photo')->toMediaCollection('pre_approved_letter_photo');
+        $application->addMediaFromRequest('job_letter_document')->toMediaCollection('job_letter_document');
+        if ($request->has('passport_photo')) {
+            $application->addMediaFromRequest('passport_photo')->toMediaCollection('passport_photo');
+        }
+
+//        Mail::to(auth()->user())->send(new ApplicationSubmitted());
 
         return response()->json($application);
     }
@@ -46,7 +53,7 @@ class ApplicationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Application  $application
+     * @param \App\Models\Application $application
      * @return \Illuminate\Http\Response
      */
     public function show(Application $application)
@@ -58,15 +65,15 @@ class ApplicationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateApplicationRequest  $request
-     * @param  \App\Models\Application  $application
+     * @param \App\Http\Requests\UpdateApplicationRequest $request
+     * @param \App\Models\Application $application
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateApplicationRequest $request, Application $application)
     {
         $application->update($request->validated());
 
-        Mail::to($application->user)->send(new ApplicationUpdated($application->refresh()));
+//        Mail::to($application->user)->send(new ApplicationUpdated($application->refresh()));
 
         return response()->json($application);
     }
@@ -74,7 +81,7 @@ class ApplicationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Application  $application
+     * @param \App\Models\Application $application
      * @return \Illuminate\Http\Response
      */
     public function destroy(Application $application)
@@ -83,22 +90,23 @@ class ApplicationController extends Controller
         return response()->json(['message' => 'Application deleted.']);
     }
 
-    public function canSubmitApplication(){
+    public function canSubmitApplication()
+    {
         $application = auth()->user()->applications()->latest()->first();
 
-        if($application && ($application->status == 'submitted' || $application->status == 'reviewing')){
+        if ($application && ($application->status == 'submitted' || $application->status == 'reviewing')) {
             return response()->json(['canSubmit' => false]);
         }
         return response()->json(['canSubmit' => true]);
     }
 
-    public function getApplicationStatus(){
+    public function getApplicationStatus()
+    {
         $application = auth()->user()->applications()->latest('created_at')->first();
 
-        if($application){
+        if ($application) {
             return response()->json(['status' => $application->status, 'comments' => $application->comments]);
-        }
-        else{
+        } else {
             return response()->json(['status' => "undefined"]);
         }
     }
