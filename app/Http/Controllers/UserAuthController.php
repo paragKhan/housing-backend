@@ -43,14 +43,16 @@ class UserAuthController extends Controller
 
     public function updateProfile(UpdateUserRequest $request)
     {
-        $user = $request->user();
-        $previous_photo = $user->photo;
+        $user = User::find(auth()->id());
 
         $user->update($request->validated());
 
-        if ($user->photo != $previous_photo)
-            PhotoController::delete($previous_photo);
+        if($request->has('photo')){
+            auth()->user()->clearMediaCollection('photo');
+            auth()->user()->addMediaFromRequest('photo')->toMediaCollection('photo');
+        }
 
+        $user->refresh();
         return response()->json($user);
     }
 

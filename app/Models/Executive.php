@@ -2,10 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\LoginTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Executive extends Model
+class Executive extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, LoginTrait;
+
+    protected $guarded = [];
+    protected $hidden = ['password'];
+    protected static $guardName = 'executive';
 }

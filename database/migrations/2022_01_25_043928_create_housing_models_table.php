@@ -15,17 +15,14 @@ class CreateHousingModelsTable extends Migration
     {
         Schema::create('housing_models', function (Blueprint $table) {
             $table->id();
-            $table->string('heading');
-            $table->string('location');
-            $table->string('gallery');
-            $table->text('description');
+            $table->string('heading')->nullable();
+            $table->string('location')->nullable();
+            $table->text('description')->nullable();
             $table->string('bedrooms')->nullable();
             $table->string('bathrooms')->nullable();
             $table->string('width')->nullable();
             $table->string('garages')->nullable();
             $table->string('patios')->nullable();
-            $table->string('master_plan_photo');
-            $table->string('basic_plan_photo');
             $table->boolean('include_in_application')->default(false);
             $table->timestamps();
         });

@@ -48,6 +48,12 @@ class SubdivisionController extends Controller
 
         $subdivision = Subdivision::create($validated);
 
+        if($request->has('gallery')){
+            foreach ($request->file('gallery') as $photo){
+                $subdivision->addMedia($photo)->toMediaCollection('gallery');
+            }
+        }
+
         return response()->json($subdivision);
     }
 
@@ -72,6 +78,14 @@ class SubdivisionController extends Controller
     public function update(UpdateSubdivisionRequest $request, Subdivision $subdivision)
     {
         $subdivision->update($request->validated());
+
+        if($request->has('gallery')){
+            $subdivision->clearMediaCollection('gallery');
+
+            foreach ($request->file('gallery') as $photo){
+                $subdivision->addMedia($photo)->toMediaCollection('gallery');
+            }
+        }
 
         return response()->json($subdivision);
     }

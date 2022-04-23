@@ -7,9 +7,12 @@ use App\Mail\Users\ApplicationUpdated;
 use App\Models\Application;
 use App\Http\Requests\StoreApplicationRequest;
 use App\Http\Requests\UpdateApplicationRequest;
+use App\Models\Executive;
 use App\Models\Photo;
+use App\Models\Staff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class ApplicationController extends Controller
@@ -21,6 +24,12 @@ class ApplicationController extends Controller
      */
     public function index()
     {
+        if(isStaff()){
+             return response()->json(Application::whereNull('forwardable_type')->whereNull('forwardable_id')->paginate(20));
+        }else if(isExecutive()){
+            return response()->json(Application::whereHasMorph('forwarder', [Staff::class])->paginate(20));
+        }
+
         $applications = Application::orderByRaw("FIELD(status , 'submitted', 'reviewing', 'resubmit', 'approved', 'declined') ASC")->paginate(20);
 
         return response()->json($applications);
@@ -71,6 +80,8 @@ class ApplicationController extends Controller
      */
     public function update(UpdateApplicationRequest $request, Application $application)
     {
+        return $request->validated();
+
         $application->update($request->validated());
 
 //        Mail::to($application->user)->send(new ApplicationUpdated($application->refresh()));
@@ -109,5 +120,12 @@ class ApplicationController extends Controller
         } else {
             return response()->json(['status' => "undefined"]);
         }
+    }
+
+    public function forward(Application $application){
+        $application->forwarder()->associate(auth()->user());
+        $application->status = Application::STATUS_REVIEWING;
+        $application->save();
+        return response()->json($application);
     }
 }

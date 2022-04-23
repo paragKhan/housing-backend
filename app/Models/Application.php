@@ -11,6 +11,12 @@ class Application extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
+    public const STATUS_SUBMITTED = 'submitted';
+    public const STATUS_REVIEWING = 'reviewing';
+    public const STATUS_RESUBMIT = 'resubmit';
+    public const STATUS_APPROVED = 'approved';
+    public const STATUS_DECLINED = 'declined';
+
     protected $guarded = [];
 
     protected $with = ['media'];
@@ -26,5 +32,13 @@ class Application extends Model implements HasMedia
 
     public function housingModel(){
         return $this->belongsTo(HousingModel::class);
+    }
+
+    public function forwarder(){
+        return $this->morphTo('forwardable');
+    }
+
+    public function approver(){
+        return $this->morphTo('approvable');
     }
 }

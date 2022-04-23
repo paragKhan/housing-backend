@@ -63,7 +63,7 @@ return [
 
         'staff' => [
             'driver' => 'session',
-            'provider' => 'staff'
+            'provider' => 'staffs'
         ],
 
         'manager' => [

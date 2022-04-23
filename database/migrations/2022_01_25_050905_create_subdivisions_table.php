@@ -15,10 +15,9 @@ class CreateSubdivisionsTable extends Migration
     {
         Schema::create('subdivisions', function (Blueprint $table) {
             $table->id();
-            $table->string('heading');
-            $table->string('location');
-            $table->text('description');
-            $table->string('photo');
+            $table->string('heading')->nullable();
+            $table->string('location')->nullable();
+            $table->text('description')->nullable();
             $table->string('category')->nullable();
             $table->boolean('include_in_application')->default(false);
             $table->timestamps();

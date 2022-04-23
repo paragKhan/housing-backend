@@ -18,7 +18,6 @@ class CreateApproversTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('photo')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
