@@ -8,7 +8,6 @@ use App\Http\Controllers\ExecutiveAuthController;
 use App\Http\Controllers\HousingModelController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\MessageController;
-use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\StaffAuthController;
 use App\Http\Controllers\SubdivisionController;
 use App\Http\Controllers\UserAuthController;
@@ -31,7 +30,6 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
 
 //User
 Route::prefix('user')->group(function () {
@@ -69,20 +67,20 @@ Route::prefix('user')->group(function () {
 
 });
 
-Route::prefix('staff')->group(function(){
+Route::prefix('staff')->group(function () {
     Route::post('login', [StaffAuthController::class, 'login']);
 
-    Route::middleware('auth:api_staff')->group(function(){
+    Route::middleware('auth:api_staff')->group(function () {
         Route::get('logout', [StaffAuthController::class, 'logout']);
         Route::get('applications/{application}/forward', [ApplicationController::class, 'forward']);
         Route::apiResource('applications', ApplicationController::class)->except('create', 'delete');
     });
 });
 
-Route::prefix('executive')->group(function(){
+Route::prefix('executive')->group(function () {
     Route::post('login', [ExecutiveAuthController::class, 'login']);
 
-    Route::middleware('auth:api_executive')->group(function(){
+    Route::middleware('auth:api_executive')->group(function () {
         Route::get('logout', [ExecutiveAuthController::class, 'logout']);
         Route::apiResource('applications', ApplicationController::class);
     });
@@ -91,7 +89,7 @@ Route::prefix('executive')->group(function(){
 Route::prefix('approver')->group(function () {
     Route::post('login', [ApproverAuthController::class, 'login']);
 
-    Route::middleware('auth:api_approver')->group(function (){
+    Route::middleware('auth:api_approver')->group(function () {
         Route::get('logout', [ApproverAuthController::class, 'logout']);
         Route::apiResource('applications', ApplicationController::class);
         Route::apiResource('messages', MessageController::class)->except('create', 'update');
@@ -103,8 +101,8 @@ Route::prefix('manager')->group(function () {
         return Manager::login($request);
     });
 
-    Route::middleware('auth:api_manager')->group(function (){
-        Route::get('logout', function(){
+    Route::middleware('auth:api_manager')->group(function () {
+        Route::get('logout', function () {
             return Manager::logout();
         });
         Route::apiResource('subdivisions', SubdivisionController::class);

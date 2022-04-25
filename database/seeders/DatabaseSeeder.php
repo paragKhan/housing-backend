@@ -15,12 +15,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AdminSeeder::class,
-            ApproverSeeder::class,
-            ManagerSeeder::class,
-            ExecutiveSeeder::class,
-            StaffSeeder::class,
-            UserSeeder::class,
-            TokenSeeder::class
+//            ApproverSeeder::class,
+//            ManagerSeeder::class,
+//            ExecutiveSeeder::class,
+//            StaffSeeder::class,
+//            UserSeeder::class,
+//            TokenSeeder::class
         ]);
     }
 }

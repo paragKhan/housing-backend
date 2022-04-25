@@ -25,7 +25,7 @@ class ApplicationController extends Controller
     public function index()
     {
         if(isStaff()){
-             return response()->json(Application::whereNull('forwardable_type')->whereNull('forwardable_id')->paginate(20));
+             return response()->json(Application::whereNull('forwardable_type')->whereNull('forwardable_id')->where('status', Application::STATUS_SUBMITTED)->paginate(20));
         }else if(isExecutive()){
             return response()->json(Application::whereHasMorph('forwarder', [Staff::class])->paginate(20));
         }
@@ -54,7 +54,7 @@ class ApplicationController extends Controller
             $application->addMediaFromRequest('passport_photo')->toMediaCollection('passport_photo');
         }
 
-//        Mail::to(auth()->user())->send(new ApplicationSubmitted());
+        Mail::to(auth()->user())->send(new ApplicationSubmitted());
 
         return response()->json($application);
     }
@@ -84,7 +84,7 @@ class ApplicationController extends Controller
 
         $application->update($request->validated());
 
-//        Mail::to($application->user)->send(new ApplicationUpdated($application->refresh()));
+        Mail::to($application->user)->send(new ApplicationUpdated($application->refresh()));
 
         return response()->json($application);
     }
