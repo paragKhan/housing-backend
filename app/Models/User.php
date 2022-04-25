@@ -8,14 +8,17 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class User extends Authenticatable implements CanResetPassword
+class User extends Authenticatable implements CanResetPassword, HasMedia
 {
-    use HasFactory, Notifiable, LoginTrait;
+    use HasFactory, Notifiable, LoginTrait, InteractsWithMedia;
 
     protected $guarded = [];
     protected $hidden = ['password'];
     protected static $guardName = 'user';
+    protected $with = ['media'];
 
     public function applications(){
         return $this->hasMany(Application::class);

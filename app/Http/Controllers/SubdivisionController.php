@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HousingModel;
 use App\Models\Subdivision;
 use App\Http\Requests\StoreSubdivisionRequest;
 use App\Http\Requests\UpdateSubdivisionRequest;
@@ -12,16 +13,24 @@ class SubdivisionController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
-        $request->validate(['location' => 'nullable|string']);
+        $request->validate([
+            'location' => 'nullable|string',
+            'category' => 'nullable|string',
+            'include_in_application' => 'nullable|boolean'
+        ]);
 
         $subdivisions = new Subdivision();
 
         if($request->has('location') && $request->location){
-            $subdivisions = Subdivision::where('location', $request->location);
+            $subdivisions = $subdivisions->where('location', $request->location);
+        }
+
+        if($request->has('category')  && $request->category){
+            $subdivisions = $subdivisions->where('category', $request->category);
         }
 
         return response()->json($subdivisions->paginate(20));
@@ -38,6 +47,12 @@ class SubdivisionController extends Controller
         $validated = $request->validated();
 
         $subdivision = Subdivision::create($validated);
+
+        if($request->has('gallery')){
+            foreach ($request->file('gallery') as $photo){
+                $subdivision->addMedia($photo)->toMediaCollection('gallery');
+            }
+        }
 
         return response()->json($subdivision);
     }
@@ -64,6 +79,14 @@ class SubdivisionController extends Controller
     {
         $subdivision->update($request->validated());
 
+        if($request->has('gallery')){
+            $subdivision->clearMediaCollection('gallery');
+
+            foreach ($request->file('gallery') as $photo){
+                $subdivision->addMedia($photo)->toMediaCollection('gallery');
+            }
+        }
+
         return response()->json($subdivision);
     }
 
@@ -84,5 +107,11 @@ class SubdivisionController extends Controller
         $locations = Subdivision::select('location')->distinct()->get()->pluck('location');
 
         return response()->json($locations);
+    }
+
+    public function forApplication(){
+        $subdivisions = Subdivision::where('include_in_application', true)->get();
+
+        return response()->json($subdivisions);
     }
 }

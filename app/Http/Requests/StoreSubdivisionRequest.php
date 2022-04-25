@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Photo;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreSubdivisionRequest extends FormRequest
 {
@@ -28,19 +29,16 @@ class StoreSubdivisionRequest extends FormRequest
             'heading' => 'required|string',
             'location' => 'required|string',
             'description' => 'required|string',
-            'photo' => 'required|string|exists:photos,uniqid'
+            'category' => ['nullable', Rule::in(['featured', 'new_arrival'])],
+            'gallery' => 'required|array|exclude',
+            'include_in_application' => 'string'
         ];
     }
 
     public function validated()
     {
-        $updates = [];
-
-        if ($this->has('photo')) {
-            $photo = Photo::where('uniqid', $this->photo)->first();
-            $updates = array_merge($updates, ['photo' => $photo->path]);
-        }
-
-        return array_merge(parent::validated(), $updates);
+        return array_merge(parent::validated(), [
+            'include_in_application' => $this->include_in_application === "true"
+        ]);
     }
 }

@@ -40,7 +40,7 @@ class UpdateUserRequest extends FormRequest
             'phone' => 'string',
             'password' => 'string|min:6|max:50',
             'is_active' => isAdmin() ? 'boolean' : 'exclude',
-            'photo' => 'string|exists:photos,uniqid',
+            'photo' => 'mimes:jpg,jpeg,png|exclude',
             'nib' => 'string|nullable',
             'dob' => 'date|nullable',
             'gender' => ['nullable', 'string', Rule::in(Constants::GENDERS)],
@@ -58,11 +58,6 @@ class UpdateUserRequest extends FormRequest
 
         if ($this->has('password')) {
             array_merge($updates, ['password' => Hash::make($this->password)]);
-        }
-
-        if ($this->has('photo')) {
-            $photo = Photo::where('uniqid', $this->photo)->first();
-            $updates = array_merge($updates, ['photo' => $photo->path]);
         }
 
         return array_merge(parent::validated(), $updates);

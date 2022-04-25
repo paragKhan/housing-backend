@@ -31,6 +31,7 @@ class StoreUserSignupRequest extends FormRequest
             'lname' => 'required|string|min:3|max:30',
             'email' => 'required|email|unique:users',
             'phone' => 'required|string',
+            'nib' => 'required|string|unique:users',
             'password' => 'required|string|min:6|max:50',
         ];
     }

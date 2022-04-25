@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\ApproverAuthController;
 use App\Http\Controllers\ApproverController;
+use App\Http\Controllers\ExecutiveAuthController;
 use App\Http\Controllers\HousingModelController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\MessageController;
-use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\StaffAuthController;
 use App\Http\Controllers\SubdivisionController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\UserController;
@@ -29,10 +31,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('email', function (Request $request) {
-    return new \App\Mail\Users\ApplicationUpdated(\App\Models\Application::first());
-});
-
 //User
 Route::prefix('user')->group(function () {
     Route::post('login', [UserAuthController::class, 'login']);
@@ -48,13 +46,15 @@ Route::prefix('user')->group(function () {
     Route::post('reset-password', [UserAuthController::class, "resetPassword"])->name('password.reset');
 
     Route::get('subdivisions/get-locations', [SubdivisionController::class, "getLocations"]);
+    Route::get('subdivisions/for-application', [SubdivisionController::class, 'forApplication']);
     Route::apiResource('subdivisions', SubdivisionController::class)->only('index', 'show');
+
+    Route::get('housing_models/for-application', [HousingModelController::class, 'forApplication']);
     Route::get('housing_models/get-queries', [HousingModelController::class, "getQueries"]);
     Route::apiResource('housing_models', HousingModelController::class)->only('index', 'show');
 
     Route::middleware('auth:api_user')->group(function () {
         //Upload photo
-        Route::post('upload_photo', [PhotoController::class, 'upload']);
         Route::get('logout', [UserAuthController::class, 'logout']);
         Route::get('profile', [UserAuthController::class, 'getProfile']);
         Route::put('profile', [UserAuthController::class, 'updateProfile']);
@@ -67,15 +67,30 @@ Route::prefix('user')->group(function () {
 
 });
 
-Route::prefix('approver')->group(function () {
-    Route::post('login', function (Request $request) {
-        return Approver::login($request);
-    });
+Route::prefix('staff')->group(function () {
+    Route::post('login', [StaffAuthController::class, 'login']);
 
-    Route::middleware('auth:api_approver')->group(function (){
-        Route::get('logout', function(){
-            return Approver::logout();
-        });
+    Route::middleware('auth:api_staff')->group(function () {
+        Route::get('logout', [StaffAuthController::class, 'logout']);
+        Route::get('applications/{application}/forward', [ApplicationController::class, 'forward']);
+        Route::apiResource('applications', ApplicationController::class)->except('create', 'delete');
+    });
+});
+
+Route::prefix('executive')->group(function () {
+    Route::post('login', [ExecutiveAuthController::class, 'login']);
+
+    Route::middleware('auth:api_executive')->group(function () {
+        Route::get('logout', [ExecutiveAuthController::class, 'logout']);
+        Route::apiResource('applications', ApplicationController::class);
+    });
+});
+
+Route::prefix('approver')->group(function () {
+    Route::post('login', [ApproverAuthController::class, 'login']);
+
+    Route::middleware('auth:api_approver')->group(function () {
+        Route::get('logout', [ApproverAuthController::class, 'logout']);
         Route::apiResource('applications', ApplicationController::class);
         Route::apiResource('messages', MessageController::class)->except('create', 'update');
     });
@@ -86,8 +101,8 @@ Route::prefix('manager')->group(function () {
         return Manager::login($request);
     });
 
-    Route::middleware('auth:api_manager')->group(function (){
-        Route::get('logout', function(){
+    Route::middleware('auth:api_manager')->group(function () {
+        Route::get('logout', function () {
             return Manager::logout();
         });
         Route::apiResource('subdivisions', SubdivisionController::class);
@@ -98,7 +113,6 @@ Route::prefix('manager')->group(function () {
 Route::prefix('admin')->group(function () {
     Route::post('login', [AdminAuthController::class, 'login']);
     Route::middleware('auth:api_admin')->group(function () {
-        Route::post('upload_photo', [PhotoController::class, 'upload']);
         Route::get('logout', [AdminAuthController::class, 'logout']);
         Route::apiResource('approvers', ApproverController::class);
         Route::apiResource('managers', ManagerController::class);

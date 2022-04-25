@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Photo;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Hash;
 
 class StoreApplicationRequest extends FormRequest
 {
@@ -26,54 +24,35 @@ class StoreApplicationRequest extends FormRequest
     public function rules()
     {
         return [
-            'fname' => 'string',
-            'lname' => 'string',
-            'email' => 'email',
-            'nib_no' => 'string',
-            'dob' => 'date',
-            'phone' => 'string',
-            'gender' => 'string',
-            'country_of_birth' => 'string',
-            'island_of_birth' => 'string',
-            'country_of_citizenship' => 'string',
-            'house_no' => 'string',
-            'street_address' => 'string',
-            'po_box' => 'string',
-            'island' => 'string',
-            'country' => 'string',
-            'home_phone' => 'string',
+            'fname' => 'required|string',
+            'lname' => 'required|string',
+            'email' => 'required|email',
+            'nib_no' => 'required|string',
+            'dob' => 'required|date',
+            'phone' => 'required|string',
+            'gender' => 'required|string',
+            'country_of_birth' => 'required|string',
+            'island_of_birth' => 'required|string',
+            'country_of_citizenship' => 'required|string',
+            'house_no' => 'required|string',
+            'street_address' => 'required|string',
+            'po_box' => 'required|string',
+            'island' => 'required|string',
+            'country' => 'required|string',
+            'home_phone' => 'required|string',
             'passport_no' => 'nullable|string',
             'passport_expiry' => 'nullable|string',
             'driving_licence_no' => 'nullable|string',
-            'nib_photo' => 'string|exists:photos,uniqid',
-            'passport_photo' => 'nullable|string|exists:photos,uniqid',
             'employer' => 'string',
             'industry' => 'string',
             'position' => 'string',
             'work_phone' => 'string',
-            'payment_slip' => 'string|exists:photos,uniqid',
+            'housing_model_id' => 'exists:housing_models,id',
+            'subdivision_id' => 'exists:subdivisions,id',
+            'nib_photo' => 'required|mimes:jpeg,jpg,png,pdf|exclude',
+            'passport_photo' => 'nullable|mimes:jpeg,jpg,png,pdf|exclude',
+            'pre_approved_letter_photo' => 'required|mimes:jpeg,jpg,png,pdf|exclude',
+            'job_letter_document' => 'required|mimes:jpeg,jpg,png,pdf|exclude'
         ];
-    }
-
-    public function validated()
-    {
-        $updates = [];
-
-        if ($this->has('nib_photo')) {
-            $photo = Photo::where('uniqid', $this->nib_photo)->first();
-            $updates = array_merge($updates, ['nib_photo' => $photo->path]);
-        }
-
-        if ($this->has('passport_photo')) {
-            $photo = Photo::where('uniqid', $this->passport_photo)->first();
-            $updates = array_merge($updates, ['passport_photo' => $photo->path]);
-        }
-
-        if ($this->has('payment_slip')) {
-            $photo = Photo::where('uniqid', $this->payment_slip)->first();
-            $updates = array_merge($updates, ['payment_slip' => $photo->path]);
-        }
-
-        return array_merge(parent::validated(), $updates);
     }
 }
