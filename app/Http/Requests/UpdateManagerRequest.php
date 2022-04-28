@@ -33,7 +33,6 @@ class UpdateManagerRequest extends FormRequest
             'name' => 'string|min:3|max:50',
             'email' => 'email|unique:managers,email,'.$this->manager_id,
             'password' => 'string|min:6|max:50',
-            'photo' => 'string',
             'is_active' => isAdmin() ? 'boolean' : 'exclude'
         ];
     }

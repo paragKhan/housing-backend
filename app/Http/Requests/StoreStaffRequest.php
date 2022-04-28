@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Hash;
 
 class StoreStaffRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class StoreStaffRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +25,14 @@ class StoreStaffRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'required|string|min:3|max:50',
+            'email' => 'required|email|unique:staff',
+            'password' => 'required|string|min:6|max:50',
         ];
+    }
+
+    public function validated()
+    {
+        return array_merge(parent::validated(), ['password' => Hash::make('password')]);
     }
 }

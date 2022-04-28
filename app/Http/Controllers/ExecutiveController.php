@@ -5,61 +5,39 @@ namespace App\Http\Controllers;
 use App\Models\Executive;
 use App\Http\Requests\StoreExecutiveRequest;
 use App\Http\Requests\UpdateExecutiveRequest;
+use Illuminate\Http\JsonResponse;
 
 class ExecutiveController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        return response()->json(Executive::paginate(20));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreExecutiveRequest  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreExecutiveRequest $request)
     {
-        //
+        return response()->json(Executive::create($request->validated()));
+
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Executive  $executive
-     * @return \Illuminate\Http\Response
-     */
     public function show(Executive $executive)
     {
-        //
+        return response()->json($executive);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateExecutiveRequest  $request
-     * @param  \App\Models\Executive  $executive
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(UpdateExecutiveRequest $request, Executive $executive)
     {
-        //
+        $executive->update($request->validated());
+
+        return response()->json($executive);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Executive  $executive
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy(Executive $executive)
     {
-        //
+        $executive->delete();
+
+        return response()->json(['message' => 'Executive deleted']);
     }
 }

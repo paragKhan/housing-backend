@@ -28,7 +28,6 @@ class StoreApproverRequest extends FormRequest
             'name' => 'required|string|min:3|max:50',
             'email' => 'required|email|unique:approvers',
             'password' => 'required|string|min:6|max:50',
-            'photo' => 'string'
         ];
     }
 

@@ -33,7 +33,6 @@ class UpdateApproverRequest extends FormRequest
             'name' => 'string|min:3|max:50',
             'email' => 'email|unique:approvers,email,'.$this->approver_id,
             'password' => 'string|min:6|max:50',
-            'photo' => 'string',
             'is_active' => isAdmin() ? 'boolean' : 'exclude'
         ];
     }

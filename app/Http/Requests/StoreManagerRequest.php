@@ -28,7 +28,6 @@ class StoreManagerRequest extends FormRequest
             'name' => 'required|string|min:3|max:50',
             'email' => 'required|email|unique:managers',
             'password' => 'required|string|min:6|max:50',
-            'photo' => 'string',
             'is_active' => isAdmin() ? 'boolean' : 'exclude'
         ];
     }

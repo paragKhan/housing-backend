@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Hash;
 
 class UpdateExecutiveRequest extends FormRequest
 {
@@ -13,7 +14,12 @@ class UpdateExecutiveRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
+    }
+
+    public function prepareForValidation()
+    {
+        $this->merge(['executive_id' => isExecutive() ? auth()->id() : $this->executive->id]);
     }
 
     /**
@@ -24,7 +30,19 @@ class UpdateExecutiveRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'string|min:3|max:50',
+            'email' => 'email|unique:approvers,email,'.$this->executive_id,
+            'password' => 'string|min:6|max:50',
+            'is_active' => isAdmin() ? 'boolean' : 'exclude'
         ];
+    }
+
+    public function validated()
+    {
+        if($this->has('password')){
+            return array_merge(parent::validated(), ['password' => Hash::make($this->password)]);
+        }
+
+        return parent::validated();
     }
 }
