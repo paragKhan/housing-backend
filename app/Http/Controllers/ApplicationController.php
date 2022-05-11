@@ -80,8 +80,6 @@ class ApplicationController extends Controller
      */
     public function update(UpdateApplicationRequest $request, Application $application)
     {
-        return $request->validated();
-
         $application->update($request->validated());
 
         Mail::to($application->user)->send(new ApplicationUpdated($application->refresh()));
