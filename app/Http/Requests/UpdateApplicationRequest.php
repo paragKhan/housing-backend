@@ -34,18 +34,20 @@ class UpdateApplicationRequest extends FormRequest
 
     public function validated()
     {
+        $updates = [];
+
         if (
         in_array($this->status, [
             Application::STATUS_APPROVED,
             Application::STATUS_DECLINED
         ])
         ) {
-            return $this->merge([
+            $updates = array_merge($updates, [
                'approvable_type' => get_class(auth()->user()),
                'approvable_id' => auth()->id()
             ]);
         }
 
-        return parent::validated();
+        return array_merge(parent::validated(), $updates);
     }
 }
