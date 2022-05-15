@@ -11,9 +11,15 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(User::paginate(20));
+        $users = new User();
+
+        if($request->search_by && $request->search_query){
+            $users = $users->where($request->search_by, 'like', '%'.$request->search_query.'%');
+        }
+
+        return response()->json($users->paginate(20));
     }
 
     public function store(StoreUserRequest $request)
