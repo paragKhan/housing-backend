@@ -21,7 +21,11 @@ class UserAuthController extends Controller
     {
         $user = User::create($request->validated());
 
-        Mail::to($user)->send(new Welcome());
+        try {
+            Mail::to($user)->send(new Welcome());
+        } catch (\Exception $exception) {
+
+        }
 
         return response()->json(['message' => 'Signup successful']);
     }
@@ -47,7 +51,7 @@ class UserAuthController extends Controller
 
         $user->update($request->validated());
 
-        if($request->has('photo')){
+        if ($request->has('photo')) {
             auth()->user()->clearMediaCollection('photo');
             auth()->user()->addMediaFromRequest('photo')->toMediaCollection('photo');
         }
@@ -56,8 +60,9 @@ class UserAuthController extends Controller
         return response()->json($user);
     }
 
-    public function sendVerificationEmail(Request $request){
-        if($request->user()->hasVerifiedEmail()){
+    public function sendVerificationEmail(Request $request)
+    {
+        if ($request->user()->hasVerifiedEmail()) {
             return response()->json(['message' => 'Already Verified']);
         }
 
@@ -66,12 +71,13 @@ class UserAuthController extends Controller
         return response()->json(['message' => 'Verification link sent']);
     }
 
-    public function verifyEmail(EmailVerificationRequest $request){
-        if($request->user()->hasVerifiedEmail()){
-            return response()->json(['message'=>'Email already verified']);
+    public function verifyEmail(EmailVerificationRequest $request)
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return response()->json(['message' => 'Email already verified']);
         }
 
-        if($request->user()->markEmailAsVerified()){
+        if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
             Mail::to($request->user())->send(new AccountVerified());
         }
@@ -79,21 +85,23 @@ class UserAuthController extends Controller
         return response()->json('Email has been verified');
     }
 
-    public function forgotPassword(Request $request){
+    public function forgotPassword(Request $request)
+    {
         $request->validate([
             'email' => 'required|email'
         ]);
 
         $status = Password::sendResetLink($request->only('email'));
 
-        if($status == Password::RESET_LINK_SENT){
+        if ($status == Password::RESET_LINK_SENT) {
             return ['message' => __($status)];
         }
 
-        return response(['message'=> __($status)], 500);
+        return response(['message' => __($status)], 500);
     }
 
-    public function resetPassword(Request $request){
+    public function resetPassword(Request $request)
+    {
         $request->validate([
             'token' => 'required',
             'email' => 'required|email',
@@ -102,16 +110,16 @@ class UserAuthController extends Controller
 
         $status = Password::reset(
             $request->only('email', 'password', 'token'),
-            function($user) use($request) {
+            function ($user) use ($request) {
                 $user->update(['password' => Hash::make($request->password)]);
                 event(new PasswordReset($user));
             }
         );
 
-        if($status == Password::PASSWORD_RESET){
+        if ($status == Password::PASSWORD_RESET) {
             return ['message' => __($status)];
         }
 
-        return response(['message'=> __($status)], 500);
+        return response(['message' => __($status)], 500);
     }
 }
