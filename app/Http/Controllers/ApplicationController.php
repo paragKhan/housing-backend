@@ -22,7 +22,7 @@ class ApplicationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if(isStaff()){
              return response()->json(Application::whereNull('forwardable_type')->whereNull('forwardable_id')->where('status', Application::STATUS_SUBMITTED)->paginate(20));
@@ -30,9 +30,15 @@ class ApplicationController extends Controller
             return response()->json(Application::whereHasMorph('forwarder', [Staff::class])->paginate(20));
         }
 
-        $applications = Application::orderByRaw("FIELD(status , 'submitted', 'reviewing', 'resubmit', 'approved', 'declined') ASC")->paginate(20);
+        $applications = new Application();
 
-        return response()->json($applications);
+        if($request->search_by){
+            if($request->search_query){
+                $applications = $applications->where($request->search_by, "like", "%".$request->search_query."%");
+            }
+        }
+
+        return response()->json($applications->paginate(20));
     }
 
     /**
