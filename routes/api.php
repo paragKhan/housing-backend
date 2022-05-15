@@ -120,7 +120,7 @@ Route::prefix('admin')->group(function () {
         Route::apiResource('managers', ManagerController::class);
         Route::apiResource('executives', ExecutiveController::class);
         Route::apiResource('staff', StaffController::class);
-        Route::apiResource('users', UserController::class)->except('destroy');
+        Route::apiResource('users', UserController::class);
         Route::apiResource('applications', ApplicationController::class);
         Route::apiResource('subdivisions', SubdivisionController::class);
         Route::apiResource('housing_models', HousingModelController::class);

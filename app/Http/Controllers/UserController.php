@@ -28,20 +28,18 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user)
     {
-        $previous_photo = $user->photo;
-
         $user->update($request->validated());
-
-        if ($request->has('photo')) {
-            PhotoController::delete($previous_photo);
-        }
 
         return response()->json($user);
     }
 
     public function destroy(User $user)
     {
-        //
+        $user->applications()->delete();
+
+        $user->delete();
+
+        return response()->json(['message' => 'User deleted']);
     }
 
 }
