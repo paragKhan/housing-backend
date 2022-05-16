@@ -24,13 +24,13 @@ class ApplicationController extends Controller
      */
     public function index(Request $request)
     {
-        if(isStaff()){
-             return response()->json(Application::whereNull('forwardable_type')->whereNull('forwardable_id')->where('status', Application::STATUS_SUBMITTED)->paginate(20));
-        }else if(isExecutive()){
-            return response()->json(Application::whereHasMorph('forwarder', [Staff::class])->paginate(20));
-        }
-
         $applications = new Application();
+
+        if(isStaff()){
+             $applications = $applications->whereNull('forwardable_type')->whereNull('forwardable_id')->where('status', Application::STATUS_SUBMITTED);
+        }else if(isExecutive()){
+            $applications = $applications->whereHasMorph('forwarder', [Staff::class]);
+        }
 
         if($request->search_by){
             if($request->search_query){
