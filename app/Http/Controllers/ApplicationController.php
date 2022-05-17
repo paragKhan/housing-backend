@@ -8,8 +8,10 @@ use App\Models\Application;
 use App\Http\Requests\StoreApplicationRequest;
 use App\Http\Requests\UpdateApplicationRequest;
 use App\Models\Executive;
+use App\Models\HousingModel;
 use App\Models\Photo;
 use App\Models\Staff;
+use App\Models\Subdivision;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -26,15 +28,33 @@ class ApplicationController extends Controller
     {
         $applications = new Application();
 
-        if(isStaff()){
-             $applications = $applications->whereNull('forwardable_type')->whereNull('forwardable_id')->where('status', Application::STATUS_SUBMITTED);
-        }else if(isExecutive()){
+        if (isStaff()) {
+            $applications = $applications->whereNull('forwardable_type')->whereNull('forwardable_id')->where('status', Application::STATUS_SUBMITTED);
+        } else if (isExecutive()) {
             $applications = $applications->whereHasMorph('forwarder', [Staff::class]);
         }
 
-        if($request->search_by){
-            if($request->search_query){
-                $applications = $applications->where($request->search_by, "like", "%".$request->search_query."%");
+        if ($request->search_by && $request->search_query) {
+            switch ($request->search_by) {
+                case "housing_models":
+                    $applications = $applications->where('housing_model_id', $request->search_query);
+                    break;
+                case "subdivisions":
+                    $applications = $applications->where('subdivision_id', $request->search_query);
+                    break;
+                case "islands":
+                    $applications = $applications->where('island', $request->search_query);
+                    break;
+                case "job_positions":
+                    $applications = $applications->where('position', $request->search_query);
+                    break;
+                case "email":
+                case "phone":
+                case "nib_no":
+                    $applications = $applications->where($request->search_by, "like", "%" . $request->search_query . "%");
+                    break;
+                default:
+                    $applications = [];
             }
         }
 
@@ -126,10 +146,44 @@ class ApplicationController extends Controller
         }
     }
 
-    public function forward(Application $application){
+    public function forward(Application $application)
+    {
         $application->forwarder()->associate(auth()->user());
         $application->status = Application::STATUS_REVIEWING;
         $application->save();
         return response()->json($application);
+    }
+
+    public function getFilterQueries()
+    {
+        $housingModels = HousingModel::all()->map(function ($housingModel) {
+            return [
+                "key" => $housingModel->id,
+                "value" => $housingModel->heading
+            ];
+        });
+
+        $subdivisions = Subdivision::all()->map(function ($subdivision) {
+            return [
+                "key" => $subdivision->id,
+                "value" => $subdivision->heading
+            ];
+        });
+
+        $job_positions = Application::select('position')->distinct()->get()->map(function ($application) {
+            return [
+                "key" => $application->position,
+                "value" => $application->position
+            ];
+        });
+
+        $islands = Application::select('island')->distinct()->get()->map(function ($application) {
+            return [
+                "key" => $application->island,
+                "value" => $application->island
+            ];
+        });
+
+        return response()->json(['housing_models' => $housingModels, 'subdivisions' => $subdivisions, 'job_positions' => $job_positions, 'islands' => $islands]);
     }
 }

@@ -121,6 +121,7 @@ Route::prefix('admin')->group(function () {
         Route::apiResource('executives', ExecutiveController::class);
         Route::apiResource('staff', StaffController::class);
         Route::apiResource('users', UserController::class);
+        Route::get('applications/filter-queries', [ApplicationController::class, 'getFilterQueries']);
         Route::apiResource('applications', ApplicationController::class);
         Route::apiResource('subdivisions', SubdivisionController::class);
         Route::apiResource('housing_models', HousingModelController::class);
