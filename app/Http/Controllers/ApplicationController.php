@@ -45,8 +45,11 @@ class ApplicationController extends Controller
                 case "islands":
                     $applications = $applications->where('island', $request->search_query);
                     break;
-                case "job_positions":
-                    $applications = $applications->where('position', $request->search_query);
+                case "industries":
+                    $applications = $applications->where('industry', $request->search_query);
+                    break;
+                case "statuses":
+                    $applications = $applications->where('status', $request->search_query);
                     break;
                 case "email":
                 case "phone":
@@ -170,7 +173,7 @@ class ApplicationController extends Controller
             ];
         });
 
-        $job_positions = Application::select('position')->distinct()->get()->map(function ($application) {
+        $industries = Application::select('industry')->distinct()->get()->map(function ($application) {
             return [
                 "key" => $application->position,
                 "value" => $application->position
@@ -184,6 +187,33 @@ class ApplicationController extends Controller
             ];
         });
 
-        return response()->json(['housing_models' => $housingModels, 'subdivisions' => $subdivisions, 'job_positions' => $job_positions, 'islands' => $islands]);
+        $statuses = [
+            [
+                "key" => "submitted",
+                "value" => "Submitted"
+            ],
+            [
+                "key" => "reviewing",
+                "value" => "Reviewing"
+            ],
+            [
+                "key" => "resubmit",
+                "value" => "Resubmit"
+            ],[
+                "key" => "approved",
+                "value" => "Approved"
+            ],[
+                "key" => "declined",
+                "value" => "Declined"
+            ],
+        ];
+
+        return response()->json([
+            'housing_models' => $housingModels,
+            'subdivisions' => $subdivisions,
+            'industries' => $industries,
+            'islands' => $islands,
+            'statuses' => $statuses
+        ]);
     }
 }
