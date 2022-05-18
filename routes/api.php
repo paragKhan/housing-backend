@@ -95,6 +95,7 @@ Route::prefix('approver')->group(function () {
 
     Route::middleware('auth:api_approver')->group(function () {
         Route::get('logout', [ApproverAuthController::class, 'logout']);
+        Route::get('applications/filter-queries', [ApplicationController::class, 'getFilterQueries']);
         Route::apiResource('applications', ApplicationController::class);
         Route::apiResource('messages', MessageController::class)->except('create', 'update');
     });
