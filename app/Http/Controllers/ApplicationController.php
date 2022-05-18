@@ -175,8 +175,8 @@ class ApplicationController extends Controller
 
         $industries = Application::select('industry')->distinct()->get()->map(function ($application) {
             return [
-                "key" => $application->position,
-                "value" => $application->position
+                "key" => $application->industry,
+                "value" => $application->industry
             ];
         });
 
