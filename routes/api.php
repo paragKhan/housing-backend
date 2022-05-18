@@ -75,6 +75,7 @@ Route::prefix('staff')->group(function () {
     Route::middleware('auth:api_staff')->group(function () {
         Route::get('logout', [StaffAuthController::class, 'logout']);
         Route::get('applications/{application}/forward', [ApplicationController::class, 'forward']);
+        Route::get('applications/filter-queries', [ApplicationController::class, 'getFilterQueries']);
         Route::apiResource('applications', ApplicationController::class)->except('create', 'delete');
     });
 });
@@ -84,6 +85,7 @@ Route::prefix('executive')->group(function () {
 
     Route::middleware('auth:api_executive')->group(function () {
         Route::get('logout', [ExecutiveAuthController::class, 'logout']);
+        Route::get('applications/filter-queries', [ApplicationController::class, 'getFilterQueries']);
         Route::apiResource('applications', ApplicationController::class);
     });
 });
