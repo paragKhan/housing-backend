@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ApproverAuthController;
 use App\Http\Controllers\ApproverController;
@@ -14,11 +15,7 @@ use App\Http\Controllers\StaffController;
 use App\Http\Controllers\SubdivisionController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\UserController;
-use App\Http\Requests\StoreUserSignupRequest;
-use App\Models\Admin;
-use App\Models\Approver;
 use App\Models\Manager;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -129,6 +126,13 @@ Route::prefix('admin')->group(function () {
         Route::apiResource('subdivisions', SubdivisionController::class);
         Route::apiResource('housing_models', HousingModelController::class);
         Route::apiResource('messages', MessageController::class)->except('create', 'update');
+
+        Route::prefix('dashboard')->group(function () {
+            Route::get('get-overview', [AdminDashboardController::class, 'getOverview']);
+            Route::get('get-user-joining-stats', [AdminDashboardController::class, 'getUserJoiningStats']);
+            Route::get('get-message-stats', [AdminDashboardController::class, 'getMessageStats']);
+            Route::get('get-subdivision-stats', [AdminDashboardController::class, 'getSubdivisionStats']);
+        });
     });
 
 });
