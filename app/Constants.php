@@ -14,6 +14,11 @@ class Constants
         Application::STATUS_APPROVED,
         Application::STATUS_DECLINED
     ];
+    public const SUPPORT_STATUSES = [
+        'waiting',
+        'active',
+        'solved'
+    ];
 
 
 }

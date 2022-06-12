@@ -13,6 +13,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\StaffAuthController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\SubdivisionController;
+use App\Http\Controllers\SupportConversationController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\UserController;
 use App\Models\Manager;
@@ -62,6 +63,13 @@ Route::prefix('user')->group(function () {
         Route::post('apply', [ApplicationController::class, 'store']);
         Route::get('can-submit-application', [ApplicationController::class, 'canSubmitApplication']);
         Route::get('get-application-status', [ApplicationController::class, 'getApplicationStatus']);
+
+        //support
+        Route::get('support_conversations/{conversation}/resolve', [SupportConversationController::class, 'resolveConversation']);
+        Route::get('support_conversations/history', [SupportConversationController::class, 'myHistory']);
+        Route::get('support_conversations/{conversation}/users', [SupportConversationController::class, 'getUsers']);
+        Route::post('support_conversations/{conversation}/send-message', [SupportConversationController::class, 'sendMessage']);
+        Route::apiResource('support_conversations', SupportConversationController::class)->except('update');
     });
 
 });
