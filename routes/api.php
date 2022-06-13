@@ -86,6 +86,14 @@ Route::prefix('staff')->group(function () {
         Route::get('applications/{application}/forward', [ApplicationController::class, 'forward']);
         Route::get('applications/filter-queries', [ApplicationController::class, 'getFilterQueries']);
         Route::apiResource('applications', ApplicationController::class)->except('create', 'delete');
+
+        Route::prefix('dashboard')->group(function () {
+            Route::get('get-overview', [AdminDashboardController::class, 'getOverview']);
+            Route::get('get-application-stats', [AdminDashboardController::class, 'getApplicationStats']);
+            Route::get('get-user-joining-stats', [AdminDashboardController::class, 'getUserJoiningStats']);
+            Route::get('get-message-stats', [AdminDashboardController::class, 'getMessageStats']);
+            Route::get('get-subdivision-stats', [AdminDashboardController::class, 'getSubdivisionStats']);
+        });
     });
 });
 
