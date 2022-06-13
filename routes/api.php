@@ -67,9 +67,8 @@ Route::prefix('user')->group(function () {
         //support
         Route::get('support_conversations/{conversation}/resolve', [SupportConversationController::class, 'resolveConversation']);
         Route::get('support_conversations/history', [SupportConversationController::class, 'myHistory']);
-        Route::get('support_conversations/{conversation}/users', [SupportConversationController::class, 'getUsers']);
         Route::post('support_conversations/{conversation}/send-message', [SupportConversationController::class, 'sendMessage']);
-        Route::apiResource('support_conversations', SupportConversationController::class)->except('update');
+        Route::apiResource('support_conversations', SupportConversationController::class)->except('update', 'destroy');
     });
 
 });
@@ -79,6 +78,11 @@ Route::prefix('staff')->group(function () {
 
     Route::middleware('auth:api_staff')->group(function () {
         Route::get('logout', [StaffAuthController::class, 'logout']);
+
+        Route::get('support_conversations/{conversation}/resolve', [SupportConversationController::class, 'resolveConversation']);
+        Route::post('support_conversations/{conversation}/send-message', [SupportConversationController::class, 'sendMessage']);
+        Route::apiResource('support_conversations', SupportConversationController::class)->except('update');
+
         Route::get('applications/{application}/forward', [ApplicationController::class, 'forward']);
         Route::get('applications/filter-queries', [ApplicationController::class, 'getFilterQueries']);
         Route::apiResource('applications', ApplicationController::class)->except('create', 'delete');

@@ -30,7 +30,7 @@ class StoreSupportConversation extends FormRequest
             'email' => 'required|email',
             'subject' => 'required|string',
             'description' => 'required|string',
-            'attachment' => 'image'
+            'attachment' => 'mimes:jpeg,jpg,png,pdf'
         ];
     }
 }

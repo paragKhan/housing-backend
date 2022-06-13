@@ -15,9 +15,9 @@ class CreateSupportMessagesTable extends Migration
     {
         Schema::create('support_messages', function (Blueprint $table) {
             $table->id();
-            $table->string('sender_type');
+            $table->nullableMorphs('senderable');
             $table->foreignId('support_conversation_id')->constrained()->onDelete('cascade');
-            $table->text('message');
+            $table->text('message')->nullable();
             $table->timestamps();
         });
     }

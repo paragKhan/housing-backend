@@ -17,7 +17,6 @@ class CreateSupportConversationsTable extends Migration
         Schema::create('support_conversations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('staff_id')->nullable()->constrained();
             $table->string('language');
             $table->string('fname');
             $table->string('lname');
