@@ -6,7 +6,6 @@ use App\Http\Requests\StoreSupportConversation;
 use App\Http\Requests\StoreSupportMessage;
 use App\Models\SupportConversation;
 use App\Models\SupportMessage;
-use Illuminate\Http\Request;
 
 class SupportConversationController extends Controller
 {
@@ -17,7 +16,9 @@ class SupportConversationController extends Controller
      */
     public function index()
     {
+        $conversations = SupportConversation::all();
 
+        return response()->json($conversations);
     }
 
     /**
@@ -38,11 +39,16 @@ class SupportConversationController extends Controller
             'subject' => $validated['subject'],
         ]);
 
-        SupportMessage::create([
+        $message = SupportMessage::create([
             'support_conversation_id' => $conversation->id,
             'message' => $validated['description'],
-            'sender_type' => 'user'
+            'senderable_type' => get_class(auth()->user()),
+            'senderable_id' => auth()->id()
         ]);
+
+        if($request->has('attachment')){
+            $message->addMedia($request->file('attachment'))->toMediaCollection('attachments');
+        }
 
         return response()->json($conversation);
     }
@@ -57,9 +63,9 @@ class SupportConversationController extends Controller
     {
         //todo add auth check for specific convo
 
-        $messages = $supportConversation->support_messages;
+        $conversation = $supportConversation->load('support_messages');
 
-        return response()->json(['messages' => $messages, 'conversation' => $supportConversation]);
+        return response()->json($conversation);
     }
 
     /**
@@ -68,40 +74,42 @@ class SupportConversationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(SupportConversation $supportConversation)
     {
-        //
+        $supportConversation->delete();
+
+        return response()->json(['message' => 'Deleted']);
     }
 
     public function sendMessage(StoreSupportMessage $request, $conversation_id){
         $conversation = SupportConversation::find($conversation_id);
-        if(auth()->id() != $conversation->user_id){
-            abort(403);
-        }
+//        if(auth()->id() != $conversation->user_id || !isStaff()){
+//            abort(403);
+//        }
 
         $message = SupportMessage::create([
             'support_conversation_id' => $conversation_id,
             'message' => $request->message,
-            'sender_type' => 'user'
+            'senderable_type' => get_class(auth()->user()),
+            'senderable_id' => auth()->id()
         ]);
+
+        if($request->has('attachment')){
+                $message->addMedia($request->file('attachment'))->toMediaCollection('attachments');
+        }
+
+        //if multiple
+//        if($request->has('attachment')){
+//            foreach ($request->file('attachments') as $photo){
+//                $message->addMedia($photo)->toMediaCollection('attachments');
+//            }
+//        }
 
         $conversation->updated_at = now();
         $conversation->status = 'active';
         $conversation->save();
 
-        return response()->json($message);
-    }
-
-    public function getUsers($conversation){
-        $conversation = SupportConversation::find($conversation);
-        if(!$conversation) abort(404);
-        if($conversation->user_id != auth()->id()) abort(403);
-
-        $user['name'] = $conversation->user->fname . " " . $conversation->user->lname;
-        $user['photo'] = $conversation->user->getFirstMediaUrl('photo');
-
-
-        return response()->json($user);
+        return response()->json($message->load('senderable'));
     }
 
     public function myHistory(){
@@ -111,7 +119,7 @@ class SupportConversationController extends Controller
     public function resolveConversation($conversation){
         $conversation = SupportConversation::find($conversation);
         if(!$conversation) abort(404);
-        if($conversation->user_id != auth()->id()) abort(403);
+//        if($conversation->user_id != auth()->id() || !isStaff()) abort(403);
 
         $conversation->status = 'solved';
         $conversation->save();
