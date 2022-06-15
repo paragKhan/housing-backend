@@ -161,6 +161,7 @@ Route::prefix('admin')->group(function () {
             Route::get('get-application-stats', [AdminDashboardController::class, 'getApplicationStats']);
             Route::get('get-user-joining-stats', [AdminDashboardController::class, 'getUserJoiningStats']);
             Route::get('get-message-stats', [AdminDashboardController::class, 'getMessageStats']);
+            Route::get('get-support-ticket-stats', [AdminDashboardController::class, 'getSupportTicketStats']);
             Route::get('get-subdivision-stats', [AdminDashboardController::class, 'getSubdivisionStats']);
         });
     });
