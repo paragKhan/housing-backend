@@ -58,7 +58,7 @@ class AdminDashboardController extends Controller
             DB::raw("COUNT(*) as count"),
             DB::raw("DAYNAME(created_at) as label"),
             DB::raw("DATE_FORMAT(created_at, '%m-%d') as day"),
-        )->whereDate('created_at', '>=', now()->startOf('week'))
+        )->whereDate('created_at', '>=', now()->subDays(7)->startOfDay())
             ->groupBy('day', "label")
             ->get();
 
@@ -94,7 +94,7 @@ class AdminDashboardController extends Controller
             DB::raw("COUNT(*) as count"),
             DB::raw("DAYNAME(created_at) as label"),
             DB::raw("DATE_FORMAT(created_at, '%m-%d') as day"),
-        )->whereDate('created_at', '>=', now()->startOf('week'))
+        )->whereDate('created_at', '>=', now()->subDays(7)->startOfDay())
             ->groupBy('day', "label")
             ->get();
 
@@ -143,6 +143,55 @@ class AdminDashboardController extends Controller
             ->get();
 
         $data['today'] = DB::table('messages')
+            ->select(
+                DB::raw("COUNT(*) as count"),
+                DB::raw('status as st')
+            )
+            ->whereDate(
+                'created_at',
+                '>=',
+                now()->startOfDay(),
+            )->groupBy('st')
+            ->get();
+
+        return response()->json($data);
+    }
+
+    public function getSupportTicketStats()
+    {
+        $data = [];
+
+        $data['all'] = DB::table('support_conversations')
+            ->select(
+                DB::raw("COUNT(*) as count"),
+                DB::raw('status as st')
+            )
+            ->groupBy('st')
+            ->get();
+
+        $data['last30'] = DB::table('support_conversations')
+            ->select(
+                DB::raw("COUNT(*) as count"),
+                DB::raw('status as st')
+            )->whereDate('created_at',
+                '>=',
+                now()->subDays(30)->startOfDay())
+            ->groupBy('st')
+            ->get();
+
+        $data['last7'] = DB::table('support_conversations')
+            ->select(
+                DB::raw("COUNT(*) as count"),
+                DB::raw('status as st')
+            )
+            ->whereDate(
+                'created_at',
+                '>=',
+                now()->subDays(7)->startOfDay(),
+            )->groupBy('st')
+            ->get();
+
+        $data['today'] = DB::table('support_conversations')
             ->select(
                 DB::raw("COUNT(*) as count"),
                 DB::raw('status as st')
