@@ -93,6 +93,7 @@ Route::prefix('staff')->group(function () {
             Route::get('get-application-stats', [AdminDashboardController::class, 'getApplicationStats']);
             Route::get('get-user-joining-stats', [AdminDashboardController::class, 'getUserJoiningStats']);
             Route::get('get-message-stats', [AdminDashboardController::class, 'getMessageStats']);
+            Route::get('get-support-ticket-stats', [AdminDashboardController::class, 'getSupportTicketStats']);
             Route::get('get-subdivision-stats', [AdminDashboardController::class, 'getSubdivisionStats']);
         });
     });
@@ -111,6 +112,7 @@ Route::prefix('executive')->group(function () {
             Route::get('get-application-stats', [AdminDashboardController::class, 'getApplicationStats']);
             Route::get('get-user-joining-stats', [AdminDashboardController::class, 'getUserJoiningStats']);
             Route::get('get-message-stats', [AdminDashboardController::class, 'getMessageStats']);
+            Route::get('get-support-ticket-stats', [AdminDashboardController::class, 'getSupportTicketStats']);
             Route::get('get-subdivision-stats', [AdminDashboardController::class, 'getSubdivisionStats']);
         });
     });
@@ -155,6 +157,11 @@ Route::prefix('admin')->group(function () {
         Route::apiResource('subdivisions', SubdivisionController::class);
         Route::apiResource('housing_models', HousingModelController::class);
         Route::apiResource('messages', MessageController::class)->except('create', 'update');
+
+        Route::get('support_conversations/{conversation}/resolve', [SupportConversationController::class, 'resolveConversation']);
+        Route::post('support_conversations/{conversation}/send-message', [SupportConversationController::class, 'sendMessage']);
+        Route::apiResource('support_conversations', SupportConversationController::class)->except('update');
+
 
         Route::prefix('dashboard')->group(function () {
             Route::get('get-overview', [AdminDashboardController::class, 'getOverview']);

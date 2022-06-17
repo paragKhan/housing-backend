@@ -83,9 +83,7 @@ class SupportConversationController extends Controller
 
     public function sendMessage(StoreSupportMessage $request, $conversation_id){
         $conversation = SupportConversation::find($conversation_id);
-//        if(auth()->id() != $conversation->user_id || !isStaff()){
-//            abort(403);
-//        }
+        //todo: add proper authentication
 
         $message = SupportMessage::create([
             'support_conversation_id' => $conversation_id,
@@ -106,7 +104,7 @@ class SupportConversationController extends Controller
 //        }
 
         $conversation->updated_at = now();
-        $conversation->status = 'active';
+        $conversation->status = isUser() ? 'active' : 'waiting';
         $conversation->save();
 
         return response()->json($message->load('senderable'));
@@ -119,7 +117,8 @@ class SupportConversationController extends Controller
     public function resolveConversation($conversation){
         $conversation = SupportConversation::find($conversation);
         if(!$conversation) abort(404);
-//        if($conversation->user_id != auth()->id() || !isStaff()) abort(403);
+
+        //todo: add proper authentication
 
         $conversation->status = 'solved';
         $conversation->save();
