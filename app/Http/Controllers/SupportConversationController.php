@@ -6,25 +6,28 @@ use App\Http\Requests\StoreSupportConversation;
 use App\Http\Requests\StoreSupportMessage;
 use App\Models\SupportConversation;
 use App\Models\SupportMessage;
+use Illuminate\Http\Request;
 
 class SupportConversationController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $conversations = SupportConversation::all();
-
-        return response()->json($conversations);
+        if ($request->has('id') && $request->id) {
+            return SupportConversation::where('id', $request->id)->get();
+        } else {
+            return response()->json(SupportConversation::all());
+        }
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreSupportConversation $request)
@@ -46,7 +49,7 @@ class SupportConversationController extends Controller
             'senderable_id' => auth()->id()
         ]);
 
-        if($request->has('attachment')){
+        if ($request->has('attachment')) {
             $message->addMedia($request->file('attachment'))->toMediaCollection('attachments');
         }
 
@@ -56,7 +59,7 @@ class SupportConversationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show(SupportConversation $supportConversation)
@@ -71,7 +74,7 @@ class SupportConversationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(SupportConversation $supportConversation)
@@ -81,7 +84,8 @@ class SupportConversationController extends Controller
         return response()->json(['message' => 'Deleted']);
     }
 
-    public function sendMessage(StoreSupportMessage $request, $conversation_id){
+    public function sendMessage(StoreSupportMessage $request, $conversation_id)
+    {
         $conversation = SupportConversation::find($conversation_id);
         //todo: add proper authentication
 
@@ -92,8 +96,8 @@ class SupportConversationController extends Controller
             'senderable_id' => auth()->id()
         ]);
 
-        if($request->has('attachment')){
-                $message->addMedia($request->file('attachment'))->toMediaCollection('attachments');
+        if ($request->has('attachment')) {
+            $message->addMedia($request->file('attachment'))->toMediaCollection('attachments');
         }
 
         //if multiple
@@ -110,13 +114,19 @@ class SupportConversationController extends Controller
         return response()->json($message->load('senderable'));
     }
 
-    public function myHistory(){
-        return response()->json(auth()->user()->support_conversations()->paginate(20));
+    public function myHistory(Request $request)
+    {
+        if($request->has('id') && $request->id){
+            return response()->json(auth()->user()->support_conversations()->where('id', $request->id)->paginate(20));
+        }else{
+            return response()->json(auth()->user()->support_conversations()->paginate(20));
+        }
     }
 
-    public function resolveConversation($conversation){
+    public function resolveConversation($conversation)
+    {
         $conversation = SupportConversation::find($conversation);
-        if(!$conversation) abort(404);
+        if (!$conversation) abort(404);
 
         //todo: add proper authentication
 

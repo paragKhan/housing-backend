@@ -68,7 +68,7 @@ Route::prefix('user')->group(function () {
         Route::get('support_conversations/{conversation}/resolve', [SupportConversationController::class, 'resolveConversation']);
         Route::get('support_conversations/history', [SupportConversationController::class, 'myHistory']);
         Route::post('support_conversations/{conversation}/send-message', [SupportConversationController::class, 'sendMessage']);
-        Route::apiResource('support_conversations', SupportConversationController::class)->except('update', 'destroy');
+        Route::apiResource('support_conversations', SupportConversationController::class)->except('index', 'update', 'destroy');
     });
 
 });
