@@ -13,7 +13,7 @@ class SupportConversation extends Model
     protected $appends = ['last_admin'];
 
     public function getLastAdminAttribute(){
-        $conversation = $this->support_messages()->where('senderable_type', '!=', User::class)->first();
+        $conversation = $this->support_messages()->where('senderable_type', '!=', User::class)->latest()->first();
         if($conversation){
             return $conversation->senderable->name;
         }
