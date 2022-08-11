@@ -79,6 +79,7 @@ Route::prefix('staff')->group(function () {
     Route::middleware('auth:api_staff')->group(function () {
         Route::get('logout', [StaffAuthController::class, 'logout']);
 
+        //support
         Route::get('support_conversations/{conversation}/resolve', [SupportConversationController::class, 'resolveConversation']);
         Route::post('support_conversations/{conversation}/send-message', [SupportConversationController::class, 'sendMessage']);
         Route::apiResource('support_conversations', SupportConversationController::class)->except('update');
@@ -106,6 +107,11 @@ Route::prefix('executive')->group(function () {
         Route::get('logout', [ExecutiveAuthController::class, 'logout']);
         Route::get('applications/filter-queries', [ApplicationController::class, 'getFilterQueries']);
         Route::apiResource('applications', ApplicationController::class);
+
+        //support
+        Route::get('support_conversations/{conversation}/resolve', [SupportConversationController::class, 'resolveConversation']);
+        Route::post('support_conversations/{conversation}/send-message', [SupportConversationController::class, 'sendMessage']);
+        Route::apiResource('support_conversations', SupportConversationController::class)->except('update');
 
         Route::prefix('dashboard')->group(function () {
             Route::get('get-overview', [AdminDashboardController::class, 'getOverview']);
