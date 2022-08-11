@@ -51,6 +51,8 @@ class ApplicationController extends Controller
                 case "statuses":
                     $applications = $applications->where('status', $request->search_query);
                     break;
+                case "fname":
+                case "lname":
                 case "email":
                 case "phone":
                 case "nib_no":
