@@ -5,17 +5,20 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ApproverAuthController;
 use App\Http\Controllers\ApproverController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ExecutiveAuthController;
 use App\Http\Controllers\ExecutiveController;
 use App\Http\Controllers\HousingModelController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\StaffAuthController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\SubdivisionController;
 use App\Http\Controllers\SupportConversationController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VideoController;
 use App\Models\Manager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +55,9 @@ Route::prefix('user')->group(function () {
     Route::get('housing_models/for-application', [HousingModelController::class, 'forApplication']);
     Route::get('housing_models/get-queries', [HousingModelController::class, "getQueries"]);
     Route::apiResource('housing_models', HousingModelController::class)->only('index', 'show');
+    Route::apiResource('photos', PhotoController::class)->only('index', 'show');
+    Route::apiResource('videos', VideoController::class)->only('index', 'show');
+    Route::apiResource('blogs', BlogController::class)->only('index', 'show');
 
     Route::middleware('auth:api_user')->group(function () {
         //Upload photo
@@ -163,11 +169,13 @@ Route::prefix('admin')->group(function () {
         Route::apiResource('subdivisions', SubdivisionController::class);
         Route::apiResource('housing_models', HousingModelController::class);
         Route::apiResource('messages', MessageController::class)->except('create', 'update');
+        Route::apiResource('photos', PhotoController::class);
+        Route::apiResource('videos', VideoController::class);
+        Route::apiResource('blogs', BlogController::class);
 
         Route::get('support_conversations/{conversation}/resolve', [SupportConversationController::class, 'resolveConversation']);
         Route::post('support_conversations/{conversation}/send-message', [SupportConversationController::class, 'sendMessage']);
         Route::apiResource('support_conversations', SupportConversationController::class)->except('update');
-
 
         Route::prefix('dashboard')->group(function () {
             Route::get('get-overview', [AdminDashboardController::class, 'getOverview']);
