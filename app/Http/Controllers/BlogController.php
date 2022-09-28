@@ -22,7 +22,7 @@ class BlogController extends Controller
             if ($request->type == 'latest') {
                 $blogs = Blog::latest()->limit(9)->get();
             } else if ($request->type == 'popular') {
-                $blogs = Blog::where('is_popular', true)->simplePaginate(20);
+                $blogs = Blog::where('is_popular', true)->simplePaginate(6);
             }
         } else {
             $blogs = Blog::simplePaginate(20);
