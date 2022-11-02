@@ -24,6 +24,10 @@ class User extends Authenticatable implements CanResetPassword, HasMedia
         return $this->hasMany(Application::class);
     }
 
+    public function rto_applications(){
+        return $this->hasMany(RentToOwnApplication::class);
+    }
+
     public function support_conversations(){
         return $this->hasMany(SupportConversation::class);
     }
