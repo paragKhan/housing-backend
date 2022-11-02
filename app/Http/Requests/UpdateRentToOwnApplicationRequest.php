@@ -3,11 +3,11 @@
 namespace App\Http\Requests;
 
 use App\Constants;
-use App\Models\Application;
+use App\Models\RentToOwnApplication;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateApplicationRequest extends FormRequest
+class UpdateRentToOwnApplicationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,28 +27,24 @@ class UpdateApplicationRequest extends FormRequest
     public function rules()
     {
         return [
-            'status' => ['string', Rule::in(Constants::APPLICATION_STATUSES)],
+            'status' => ['string', Rule::in(Constants::RTO_APPLICATION_STATUSES)],
             'comments' => 'nullable|string'
         ];
     }
 
     public function validated()
     {
-        if($this->application->status == Application::STATUS_APPROVED && !isAdmin()){
+        if($this->rto_application->status == RentToOwnApplication::STATUS_APPROVED && !isAdmin()){
             return [];
         }
 
         $updates = [];
 
-        if (
-        in_array($this->status, [
-            Application::STATUS_APPROVED,
-            Application::STATUS_DECLINED
-        ])
+        if ($this->has('status')
         ) {
             $updates = array_merge($updates, [
-               'approvable_type' => get_class(auth()->user()),
-               'approvable_id' => auth()->id()
+                'approvable_type' => get_class(auth()->user()),
+                'approvable_id' => auth()->id()
             ]);
         }
 

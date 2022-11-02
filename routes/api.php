@@ -12,6 +12,7 @@ use App\Http\Controllers\HousingModelController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\RentToOwnApplicationController;
 use App\Http\Controllers\StaffAuthController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\SubdivisionController;
@@ -67,8 +68,13 @@ Route::prefix('user')->group(function () {
 
         //applications
         Route::post('apply', [ApplicationController::class, 'store']);
+        //todo: merge bellow routes into one
         Route::get('can-submit-application', [ApplicationController::class, 'canSubmitApplication']);
         Route::get('get-application-status', [ApplicationController::class, 'getApplicationStatus']);
+
+        //rto-applications
+        Route::post('apply-rto', [RentToOwnApplicationController::class, 'store']);
+        Route::get('get-rto-application-status', [RentToOwnApplicationController::class, 'getApplicationStatus']);
 
         //support
         Route::get('support_conversations/{conversation}/resolve', [SupportConversationController::class, 'resolveConversation']);
@@ -92,8 +98,8 @@ Route::prefix('staff')->group(function () {
 
         Route::get('applications/{application}/forward', [ApplicationController::class, 'forward']);
         Route::get('applications/filter-queries', [ApplicationController::class, 'getFilterQueries']);
-        Route::apiResource('messages', MessageController::class)->except('create', 'update');
-        Route::apiResource('applications', ApplicationController::class)->except('create', 'delete');
+        Route::apiResource('messages', MessageController::class)->except('store', 'update');
+        Route::apiResource('applications', ApplicationController::class)->except('store', 'delete');
 
         Route::prefix('dashboard')->group(function () {
             Route::get('get-overview', [AdminDashboardController::class, 'getOverview']);
@@ -112,7 +118,7 @@ Route::prefix('executive')->group(function () {
     Route::middleware('auth:api_executive')->group(function () {
         Route::get('logout', [ExecutiveAuthController::class, 'logout']);
         Route::get('applications/filter-queries', [ApplicationController::class, 'getFilterQueries']);
-        Route::apiResource('applications', ApplicationController::class);
+        Route::apiResource('applications', ApplicationController::class)->except('store', 'delete');
 
         //support
         Route::get('support_conversations/{conversation}/resolve', [SupportConversationController::class, 'resolveConversation']);
@@ -137,7 +143,7 @@ Route::prefix('approver')->group(function () {
         Route::get('logout', [ApproverAuthController::class, 'logout']);
         Route::get('applications/filter-queries', [ApplicationController::class, 'getFilterQueries']);
         Route::apiResource('applications', ApplicationController::class);
-        Route::apiResource('messages', MessageController::class)->except('create', 'update');
+        Route::apiResource('messages', MessageController::class)->except('store', 'update');
     });
 });
 
@@ -165,10 +171,12 @@ Route::prefix('admin')->group(function () {
         Route::apiResource('staff', StaffController::class);
         Route::apiResource('users', UserController::class);
         Route::get('applications/filter-queries', [ApplicationController::class, 'getFilterQueries']);
-        Route::apiResource('applications', ApplicationController::class);
+        Route::apiResource('applications', ApplicationController::class)->except('store');
+        Route::get('rto-applications/filter-queries', [RentToOwnApplicationController::class, 'getFilterQueries']);
+        Route::apiResource('rto-applications', RentToOwnApplicationController::class);
         Route::apiResource('subdivisions', SubdivisionController::class);
         Route::apiResource('housing_models', HousingModelController::class);
-        Route::apiResource('messages', MessageController::class)->except('create', 'update');
+        Route::apiResource('messages', MessageController::class)->except('store', 'update');
         Route::apiResource('photos', PhotoController::class);
         Route::apiResource('videos', VideoController::class);
         Route::apiResource('blogs', BlogController::class);
