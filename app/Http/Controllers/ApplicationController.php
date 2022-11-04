@@ -28,9 +28,10 @@ class ApplicationController extends Controller
     {
         $applications = new Application();
 
-        if (isStaff()) {
-            $applications = $applications->whereNull('forwardable_type')->whereNull('forwardable_id')->where('status', Application::STATUS_SUBMITTED);
-        } else if (isExecutive()) {
+//        if (isStaff()) {
+//            $applications = $applications->whereNull('forwardable_type')->whereNull('forwardable_id')->where('status', Application::STATUS_SUBMITTED);
+//        } else
+        if (isExecutive()) {
             $applications = $applications->whereHasMorph('forwarder', [Staff::class]);
         }
 
@@ -201,10 +202,10 @@ class ApplicationController extends Controller
             [
                 "key" => "resubmit",
                 "value" => "Resubmit"
-            ],[
+            ], [
                 "key" => "approved",
                 "value" => "Approved"
-            ],[
+            ], [
                 "key" => "declined",
                 "value" => "Declined"
             ],

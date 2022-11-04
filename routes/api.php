@@ -100,8 +100,8 @@ Route::prefix('staff')->group(function () {
 
         Route::get('applications/{application}/forward', [ApplicationController::class, 'forward']);
         Route::get('applications/filter-queries', [ApplicationController::class, 'getFilterQueries']);
-        Route::apiResource('messages', MessageController::class)->except('store', 'update');
         Route::apiResource('applications', ApplicationController::class)->except('store', 'delete');
+        Route::apiResource('messages', MessageController::class)->except('store', 'update');
 
         Route::prefix('dashboard')->group(function () {
             Route::get('get-overview', [AdminDashboardController::class, 'getOverview']);
