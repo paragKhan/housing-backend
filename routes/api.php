@@ -14,6 +14,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\RentToOwnApplicationController;
 use App\Http\Controllers\RTOAuthController;
+use App\Http\Controllers\RTOController;
 use App\Http\Controllers\StaffAuthController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\SubdivisionController;
@@ -170,6 +171,7 @@ Route::prefix('admin')->group(function () {
         Route::apiResource('managers', ManagerController::class);
         Route::apiResource('executives', ExecutiveController::class);
         Route::apiResource('staff', StaffController::class);
+        Route::apiResource('rtos', RTOController::class);
         Route::apiResource('users', UserController::class);
         Route::get('applications/filter-queries', [ApplicationController::class, 'getFilterQueries']);
         Route::apiResource('applications', ApplicationController::class)->except('store');
