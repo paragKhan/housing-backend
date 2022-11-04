@@ -13,6 +13,7 @@ use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\RentToOwnApplicationController;
+use App\Http\Controllers\RTOAuthController;
 use App\Http\Controllers\StaffAuthController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\SubdivisionController;
@@ -184,6 +185,26 @@ Route::prefix('admin')->group(function () {
         Route::get('support_conversations/{conversation}/resolve', [SupportConversationController::class, 'resolveConversation']);
         Route::post('support_conversations/{conversation}/send-message', [SupportConversationController::class, 'sendMessage']);
         Route::apiResource('support_conversations', SupportConversationController::class)->except('update');
+
+        Route::prefix('dashboard')->group(function () {
+            Route::get('get-overview', [AdminDashboardController::class, 'getOverview']);
+            Route::get('get-application-stats', [AdminDashboardController::class, 'getApplicationStats']);
+            Route::get('get-user-joining-stats', [AdminDashboardController::class, 'getUserJoiningStats']);
+            Route::get('get-message-stats', [AdminDashboardController::class, 'getMessageStats']);
+            Route::get('get-support-ticket-stats', [AdminDashboardController::class, 'getSupportTicketStats']);
+            Route::get('get-subdivision-stats', [AdminDashboardController::class, 'getSubdivisionStats']);
+        });
+    });
+
+});
+
+Route::prefix('rto')->group(function () {
+    Route::post('login', [RTOAuthController::class, 'login']);
+    Route::middleware('auth:api_rto')->group(function () {
+        Route::get('logout', [RTOAuthController::class, 'logout']);
+
+        Route::get('rto-applications/filter-queries', [RentToOwnApplicationController::class, 'getFilterQueries']);
+        Route::apiResource('rto-applications', RentToOwnApplicationController::class);
 
         Route::prefix('dashboard')->group(function () {
             Route::get('get-overview', [AdminDashboardController::class, 'getOverview']);

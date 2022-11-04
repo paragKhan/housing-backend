@@ -1,5 +1,13 @@
 <?php
 
+use App\Models\Admin;
+use App\Models\Approver;
+use App\Models\Executive;
+use App\Models\Manager;
+use App\Models\RTO;
+use App\Models\Staff;
+use App\Models\User;
+
 return [
 
     /*
@@ -70,6 +78,10 @@ return [
             'driver' => 'session',
             'provider' => 'managers'
         ],
+        'rto' => [
+            'driver' => 'session',
+            'provider' => 'rtos'
+        ],
 
         'api_user' => [
             'driver' => 'sanctum',
@@ -95,6 +107,10 @@ return [
         'api_staff' => [
             'driver' => 'sanctum',
             'provider' => 'staffs'
+        ],
+        'api_rto' => [
+            'driver' => 'sanctum',
+            'provider' => 'rtos'
         ]
     ],
 
@@ -118,31 +134,35 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => User::class,
         ],
 
         'admins' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Admin::class,
+            'model' => Admin::class,
         ],
 
         'approvers' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Approver::class,
+            'model' => Approver::class,
         ],
 
         'managers' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Manager::class,
+            'model' => Manager::class,
         ],
         'executives' => [
             'driver' => 'eloquent',
-            'model' => \App\Models\Executive::class
+            'model' => Executive::class
         ],
         'staffs' => [
             'driver' => 'eloquent',
-            'model' => \App\Models\Staff::class
-        ]
+            'model' => Staff::class
+        ],
+        'rtos' => [
+            'driver' => 'eloquent',
+            'model' => RTO::class
+        ],
     ],
 
     /*

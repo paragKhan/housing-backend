@@ -36,6 +36,11 @@ class UserController extends Controller
     {
         $user->update($request->validated());
 
+        if($request->has('photo')){
+            $user->clearMediaCollection('photo');
+            $user->addMediaFromRequest('photo')->toMediaCollection('photo');
+        }
+
         return response()->json($user);
     }
 
