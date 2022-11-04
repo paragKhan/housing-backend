@@ -5,61 +5,39 @@ namespace App\Http\Controllers;
 use App\Models\RTO;
 use App\Http\Requests\StoreRTORequest;
 use App\Http\Requests\UpdateRTORequest;
+use Illuminate\Http\JsonResponse;
 
 class RTOController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        return response()->json(Rto::paginate(20));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreRTORequest  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreRTORequest $request)
     {
-        //
+        return response()->json(RTO::create($request->validated()));
+
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\RTO  $rTO
-     * @return \Illuminate\Http\Response
-     */
-    public function show(RTO $rTO)
+    public function show(RTO $rto)
     {
-        //
+        return response()->json($rto);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateRTORequest  $request
-     * @param  \App\Models\RTO  $rTO
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateRTORequest $request, RTO $rTO)
+
+    public function update(UpdateRTORequest $request, RTO $rto)
     {
-        //
+        $rto->update($request->validated());
+
+        return response()->json($rto);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\RTO  $rTO
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(RTO $rTO)
+
+    public function destroy(RTO $rto)
     {
-        //
+        $rto->delete();
+
+        return response()->json(['message' => 'RTO deleted']);
     }
 }
